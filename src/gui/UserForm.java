@@ -28,16 +28,18 @@ public class UserForm extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Service Object
         service = new UserService();
 
-        // Title
+        // ================= TITLE =================
+
         titleLabel = new JLabel("USER MANAGEMENT");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
         titleLabel.setBounds(180, 30, 300, 30);
         add(titleLabel);
 
-        // User ID
+
+        // ================= USER ID =================
+
         idLabel = new JLabel("User ID:");
         idLabel.setBounds(80, 90, 100, 25);
 
@@ -47,7 +49,9 @@ public class UserForm extends JFrame implements ActionListener {
         add(idLabel);
         add(idField);
 
-        // Name
+
+        // ================= NAME =================
+
         nameLabel = new JLabel("Name:");
         nameLabel.setBounds(80, 130, 100, 25);
 
@@ -57,7 +61,9 @@ public class UserForm extends JFrame implements ActionListener {
         add(nameLabel);
         add(nameField);
 
-        // Email
+
+        // ================= EMAIL =================
+
         emailLabel = new JLabel("Email:");
         emailLabel.setBounds(80, 170, 100, 25);
 
@@ -67,7 +73,9 @@ public class UserForm extends JFrame implements ActionListener {
         add(emailLabel);
         add(emailField);
 
-        // Phone
+
+        // ================= PHONE =================
+
         phoneLabel = new JLabel("Phone:");
         phoneLabel.setBounds(80, 210, 100, 25);
 
@@ -77,7 +85,9 @@ public class UserForm extends JFrame implements ActionListener {
         add(phoneLabel);
         add(phoneField);
 
-        // Password
+
+        // ================= PASSWORD =================
+
         passwordLabel = new JLabel("Password:");
         passwordLabel.setBounds(80, 250, 100, 25);
 
@@ -87,7 +97,9 @@ public class UserForm extends JFrame implements ActionListener {
         add(passwordLabel);
         add(passwordField);
 
-        // Buttons
+
+        // ================= BUTTONS =================
+
         addButton = new JButton("Add");
         addButton.setBounds(100, 310, 100, 35);
 
@@ -113,68 +125,299 @@ public class UserForm extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+
+    // ================= VALIDATION =================
+
+    private boolean validateUserDetails() {
+
+        String name = nameField.getText().trim();
+        String email = emailField.getText().trim();
+        String phone = phoneField.getText().trim();
+        String password = new String(passwordField.getPassword());
+
+
+        // NAME
+
+        if (name.isEmpty()) {
+
+            JOptionPane.showMessageDialog(this,
+                    "Name cannot be empty!");
+
+            return false;
+        }
+
+        if (!name.matches("[a-zA-Z ]+")) {
+
+            JOptionPane.showMessageDialog(this,
+                    "Name should contain only letters!");
+
+            return false;
+        }
+
+
+        // EMAIL
+
+        if (email.isEmpty()) {
+
+            JOptionPane.showMessageDialog(this,
+                    "Email cannot be empty!");
+
+            return false;
+        }
+
+        if (!email.matches(
+                "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+
+            JOptionPane.showMessageDialog(this,
+                    "Please enter a valid email!");
+
+            return false;
+        }
+
+
+        // PHONE
+
+        if (!phone.matches("\\d{10}")) {
+
+            JOptionPane.showMessageDialog(this,
+                    "Phone number must contain exactly 10 digits!");
+
+            return false;
+        }
+
+
+        // PASSWORD
+
+        if (password.length() < 5) {
+
+            JOptionPane.showMessageDialog(this,
+                    "Password must contain at least 5 characters!");
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+    // ================= BUTTON ACTIONS =================
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        String name = nameField.getText();
-        String email = emailField.getText();
-        String phone = phoneField.getText();
-        String password = new String(passwordField.getPassword());
+        try {
 
-        // ADD USER
-        if (e.getSource() == addButton) {
+            // ================= ADD =================
 
-            User user = new User(name, email, phone, password);
+            if (e.getSource() == addButton) {
 
-            service.addUser(user);
+                if (!validateUserDetails()) {
+                    return;
+                }
+
+                String name = nameField.getText().trim();
+                String email = emailField.getText().trim();
+                String phone = phoneField.getText().trim();
+                String password =
+                        new String(passwordField.getPassword());
+
+                User user =
+                        new User(name, email, phone, password);
+
+                boolean success = service.addUser(user);
+
+                if (success) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "User Added Successfully!");
+
+                } else {
+
+                    JOptionPane.showMessageDialog(this,
+                            "User could not be added!");
+                }
+            }
+
+
+            // ================= UPDATE =================
+
+            else if (e.getSource() == updateButton) {
+
+                if (!validateUserDetails()) {
+                    return;
+                }
+
+                int id;
+
+                try {
+
+                    id = Integer.parseInt(
+                            idField.getText().trim());
+
+                } catch (NumberFormatException ex) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "Please enter a valid User ID!");
+
+                    return;
+                }
+
+
+                if (id <= 0) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "User ID must be greater than 0!");
+
+                    return;
+                }
+
+
+                String name =
+                        nameField.getText().trim();
+
+                String email =
+                        emailField.getText().trim();
+
+                String phone =
+                        phoneField.getText().trim();
+
+                String password =
+                        new String(passwordField.getPassword());
+
+
+                User user =
+                        new User(name, email, phone, password);
+
+                user.setUserId(id);
+
+
+                // Password used for verification
+                String oldPassword =
+                        JOptionPane.showInputDialog(
+                                this,
+                                "Enter your current password:"
+                        );
+
+
+                if (oldPassword == null ||
+                        oldPassword.isEmpty()) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "Password is required!");
+
+                    return;
+                }
+
+
+                boolean success =
+                        service.updateUser(user, oldPassword);
+
+
+                if (success) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "User Updated Successfully!");
+
+                } else {
+
+                    JOptionPane.showMessageDialog(this,
+                            "Invalid User ID or Password!\nUser was not updated.");
+                }
+            }
+
+
+            // ================= DELETE =================
+
+            else if (e.getSource() == deleteButton) {
+
+                int id;
+
+                try {
+
+                    id = Integer.parseInt(
+                            idField.getText().trim());
+
+                } catch (NumberFormatException ex) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "Please enter a valid User ID!");
+
+                    return;
+                }
+
+
+                if (id <= 0) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "User ID must be greater than 0!");
+
+                    return;
+                }
+
+
+                String password =
+                        JOptionPane.showInputDialog(
+                                this,
+                                "Enter your password:"
+                        );
+
+
+                if (password == null ||
+                        password.isEmpty()) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "Password is required!");
+
+                    return;
+                }
+
+
+                boolean success =
+                        service.deleteUser(id, password);
+
+
+                if (success) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "User Deleted Successfully!");
+
+                } else {
+
+                    JOptionPane.showMessageDialog(this,
+                            "Invalid User ID or Password!\nUser was not deleted.");
+                }
+            }
+
+
+            // ================= VIEW =================
+
+            else if (e.getSource() == viewButton) {
+
+                service.viewUsers();
+
+                JOptionPane.showMessageDialog(this,
+                        "Users displayed in Output/Terminal!");
+            }
+
+
+            // ================= CLEAR =================
+
+            idField.setText("");
+            nameField.setText("");
+            emailField.setText("");
+            phoneField.setText("");
+            passwordField.setText("");
+
+        } catch (Exception ex) {
 
             JOptionPane.showMessageDialog(this,
-                    "User Added Successfully!");
+                    "Something went wrong: " + ex.getMessage());
         }
-
-        // UPDATE USER
-        else if (e.getSource() == updateButton) {
-
-            int id = Integer.parseInt(idField.getText());
-
-            User user = new User(name, email, phone, password);
-            user.setUserId(id);
-
-            service.updateUser(user);
-
-            JOptionPane.showMessageDialog(this,
-                    "User Updated Successfully!");
-        }
-
-        // DELETE USER
-        else if (e.getSource() == deleteButton) {
-
-            int id = Integer.parseInt(idField.getText());
-
-            service.deleteUser(id);
-
-            JOptionPane.showMessageDialog(this,
-                    "User Deleted Successfully!");
-        }
-
-        // VIEW USERS
-        else if (e.getSource() == viewButton) {
-
-            service.viewUsers();
-
-            JOptionPane.showMessageDialog(this,
-                    "Users displayed in Output/Terminal!");
-        }
-
-        // Clear Fields
-        idField.setText("");
-        nameField.setText("");
-        emailField.setText("");
-        phoneField.setText("");
-        passwordField.setText("");
     }
 
+
     public static void main(String[] args) {
+
         new UserForm();
     }
 }
