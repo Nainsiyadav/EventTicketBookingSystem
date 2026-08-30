@@ -4,11 +4,11 @@ import model.Booking;
 
 public interface BookingOperations {
 
-    void addBooking(Booking booking);
+    String addBooking(Booking booking);
 
     void viewBookings();
 
-    void updateBooking(Booking booking);
+    String updateBooking(Booking booking, String password);
 
-    void deleteBooking(int bookingId);
+    String deleteBooking(int bookingId, String password);
 }

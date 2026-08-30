@@ -32,13 +32,15 @@ public class BookingForm extends JFrame implements ActionListener {
 
         service = new BookingService();
 
-        // Title
+        // ================= TITLE =================
+
         titleLabel = new JLabel("BOOKING MANAGEMENT");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
         titleLabel.setBounds(170, 30, 300, 30);
         add(titleLabel);
 
-        // Booking ID
+        // ================= BOOKING ID =================
+
         bookingIdLabel = new JLabel("Booking ID:");
         bookingIdLabel.setBounds(80, 90, 120, 25);
 
@@ -48,7 +50,8 @@ public class BookingForm extends JFrame implements ActionListener {
         add(bookingIdLabel);
         add(bookingIdField);
 
-        // User ID
+        // ================= USER ID =================
+
         userIdLabel = new JLabel("User ID:");
         userIdLabel.setBounds(80, 130, 120, 25);
 
@@ -58,7 +61,8 @@ public class BookingForm extends JFrame implements ActionListener {
         add(userIdLabel);
         add(userIdField);
 
-        // Event ID
+        // ================= EVENT ID =================
+
         eventIdLabel = new JLabel("Event ID:");
         eventIdLabel.setBounds(80, 170, 120, 25);
 
@@ -68,7 +72,8 @@ public class BookingForm extends JFrame implements ActionListener {
         add(eventIdLabel);
         add(eventIdField);
 
-        // Ticket Type ID
+        // ================= TICKET TYPE =================
+
         ticketTypeIdLabel = new JLabel("Ticket Type ID:");
         ticketTypeIdLabel.setBounds(80, 210, 120, 25);
 
@@ -78,7 +83,8 @@ public class BookingForm extends JFrame implements ActionListener {
         add(ticketTypeIdLabel);
         add(ticketTypeIdField);
 
-        // Quantity
+        // ================= QUANTITY =================
+
         quantityLabel = new JLabel("Quantity:");
         quantityLabel.setBounds(80, 250, 120, 25);
 
@@ -88,7 +94,8 @@ public class BookingForm extends JFrame implements ActionListener {
         add(quantityLabel);
         add(quantityField);
 
-        // Total Amount
+        // ================= TOTAL AMOUNT =================
+
         totalAmountLabel = new JLabel("Total Amount:");
         totalAmountLabel.setBounds(80, 290, 120, 25);
 
@@ -98,7 +105,8 @@ public class BookingForm extends JFrame implements ActionListener {
         add(totalAmountLabel);
         add(totalAmountField);
 
-        // Buttons
+        // ================= BUTTONS =================
+
         addButton = new JButton("Add");
         addButton.setBounds(90, 360, 100, 35);
 
@@ -124,19 +132,59 @@ public class BookingForm extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+
+    // =====================================================
+    // BUTTON ACTIONS
+    // =====================================================
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        try {
+        // ================= ADD =================
 
-            // ADD BOOKING
-            if (e.getSource() == addButton) {
+        if (e.getSource() == addButton) {
 
-                int userId = Integer.parseInt(userIdField.getText());
-                int eventId = Integer.parseInt(eventIdField.getText());
-                int ticketTypeId = Integer.parseInt(ticketTypeIdField.getText());
-                int quantity = Integer.parseInt(quantityField.getText());
-                double totalAmount = Double.parseDouble(totalAmountField.getText());
+            try {
+
+                if (userIdField.getText().trim().isEmpty()) {
+                    showError("Please enter User ID.");
+                    return;
+                }
+
+                if (eventIdField.getText().trim().isEmpty()) {
+                    showError("Please enter Event ID.");
+                    return;
+                }
+
+                if (ticketTypeIdField.getText().trim().isEmpty()) {
+                    showError("Please enter Ticket Type ID.");
+                    return;
+                }
+
+                if (quantityField.getText().trim().isEmpty()) {
+                    showError("Please enter Quantity.");
+                    return;
+                }
+
+                if (totalAmountField.getText().trim().isEmpty()) {
+                    showError("Please enter Total Amount.");
+                    return;
+                }
+
+                int userId =
+                        Integer.parseInt(userIdField.getText().trim());
+
+                int eventId =
+                        Integer.parseInt(eventIdField.getText().trim());
+
+                int ticketTypeId =
+                        Integer.parseInt(ticketTypeIdField.getText().trim());
+
+                int quantity =
+                        Integer.parseInt(quantityField.getText().trim());
+
+                double totalAmount =
+                        Double.parseDouble(totalAmountField.getText().trim());
 
                 Booking booking = new Booking(
                         userId,
@@ -146,21 +194,111 @@ public class BookingForm extends JFrame implements ActionListener {
                         totalAmount
                 );
 
-                service.addBooking(booking);
+                String result = service.addBooking(booking);
 
-                JOptionPane.showMessageDialog(this,
-                        "Booking Added Successfully!");
+                if (result.startsWith("Booking Added Successfully")) {
+
+                    JOptionPane.showMessageDialog(
+                            this,
+                            result,
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+
+                    clearFields();
+
+                } else {
+
+                    showError(result);
+                }
+
+            } catch (NumberFormatException ex) {
+
+                showError(
+                        "Please enter valid numbers in User ID, Event ID, " +
+                        "Ticket Type ID, Quantity and Total Amount."
+                );
             }
+        }
 
-            // UPDATE BOOKING
-            else if (e.getSource() == updateButton) {
 
-                int bookingId = Integer.parseInt(bookingIdField.getText());
-                int userId = Integer.parseInt(userIdField.getText());
-                int eventId = Integer.parseInt(eventIdField.getText());
-                int ticketTypeId = Integer.parseInt(ticketTypeIdField.getText());
-                int quantity = Integer.parseInt(quantityField.getText());
-                double totalAmount = Double.parseDouble(totalAmountField.getText());
+        // ================= UPDATE =================
+
+        else if (e.getSource() == updateButton) {
+
+            try {
+
+                if (bookingIdField.getText().trim().isEmpty()) {
+                    showError("Please enter Booking ID.");
+                    return;
+                }
+
+                if (userIdField.getText().trim().isEmpty()) {
+                    showError("Please enter User ID.");
+                    return;
+                }
+
+                if (eventIdField.getText().trim().isEmpty()) {
+                    showError("Please enter Event ID.");
+                    return;
+                }
+
+                if (ticketTypeIdField.getText().trim().isEmpty()) {
+                    showError("Please enter Ticket Type ID.");
+                    return;
+                }
+
+                if (quantityField.getText().trim().isEmpty()) {
+                    showError("Please enter Quantity.");
+                    return;
+                }
+
+                if (totalAmountField.getText().trim().isEmpty()) {
+                    showError("Please enter Total Amount.");
+                    return;
+                }
+
+                int bookingId =
+                        Integer.parseInt(bookingIdField.getText().trim());
+
+                int userId =
+                        Integer.parseInt(userIdField.getText().trim());
+
+                int eventId =
+                        Integer.parseInt(eventIdField.getText().trim());
+
+                int ticketTypeId =
+                        Integer.parseInt(ticketTypeIdField.getText().trim());
+
+                int quantity =
+                        Integer.parseInt(quantityField.getText().trim());
+
+                double totalAmount =
+                        Double.parseDouble(totalAmountField.getText().trim());
+
+                // Password dialog
+                JPasswordField passwordField =
+                        new JPasswordField();
+
+                int option = JOptionPane.showConfirmDialog(
+                        this,
+                        passwordField,
+                        "Enter Current Password",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE
+                );
+
+                if (option != JOptionPane.OK_OPTION) {
+                    return;
+                }
+
+                String password =
+                        new String(passwordField.getPassword());
+
+                if (password.trim().isEmpty()) {
+                    showError("Password cannot be empty.");
+                    return;
+                }
 
                 Booking booking = new Booking(
                         userId,
@@ -172,50 +310,151 @@ public class BookingForm extends JFrame implements ActionListener {
 
                 booking.setBookingId(bookingId);
 
-                service.updateBooking(booking);
+                String result =
+                        service.updateBooking(booking, password);
 
-                JOptionPane.showMessageDialog(this,
-                        "Booking Updated Successfully!");
+                if (result.startsWith("Booking Updated Successfully")) {
+
+                    JOptionPane.showMessageDialog(
+                            this,
+                            result,
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+
+                    clearFields();
+
+                } else {
+
+                    showError(result);
+                }
+
+            } catch (NumberFormatException ex) {
+
+                showError(
+                        "Please enter valid numbers in all numeric fields."
+                );
             }
+        }
 
-            // DELETE BOOKING
-            else if (e.getSource() == deleteButton) {
 
-                int bookingId = Integer.parseInt(
-                        bookingIdField.getText()
+        // ================= DELETE =================
+
+        else if (e.getSource() == deleteButton) {
+
+            try {
+
+                if (bookingIdField.getText().trim().isEmpty()) {
+                    showError("Please enter Booking ID.");
+                    return;
+                }
+
+                int bookingId =
+                        Integer.parseInt(
+                                bookingIdField.getText().trim()
+                        );
+
+                // Password dialog
+                JPasswordField passwordField =
+                        new JPasswordField();
+
+                int option = JOptionPane.showConfirmDialog(
+                        this,
+                        passwordField,
+                        "Enter Current Password",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE
                 );
 
-                service.deleteBooking(bookingId);
+                if (option != JOptionPane.OK_OPTION) {
+                    return;
+                }
 
-                JOptionPane.showMessageDialog(this,
-                        "Booking Deleted Successfully!");
+                String password =
+                        new String(passwordField.getPassword());
+
+                if (password.trim().isEmpty()) {
+                    showError("Password cannot be empty.");
+                    return;
+                }
+
+                String result =
+                        service.deleteBooking(
+                                bookingId,
+                                password
+                        );
+
+                if (result.startsWith("Booking Deleted Successfully")) {
+
+                    JOptionPane.showMessageDialog(
+                            this,
+                            result,
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+
+                    clearFields();
+
+                } else {
+
+                    showError(result);
+                }
+
+            } catch (NumberFormatException ex) {
+
+                showError("Please enter a valid Booking ID.");
             }
+        }
 
-            // VIEW BOOKINGS
-            else if (e.getSource() == viewButton) {
 
-                service.viewBookings();
+        // ================= VIEW =================
 
-                JOptionPane.showMessageDialog(this,
-                        "Bookings displayed in Terminal!");
-            }
+        else if (e.getSource() == viewButton) {
 
-            // Clear Fields
-            bookingIdField.setText("");
-            userIdField.setText("");
-            eventIdField.setText("");
-            ticketTypeIdField.setText("");
-            quantityField.setText("");
-            totalAmountField.setText("");
+            service.viewBookings();
 
-        } catch (Exception ex) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Please enter valid details!");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Bookings displayed in Terminal.",
+                    "Bookings",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
         }
     }
 
+
+    // =====================================================
+    // ERROR MESSAGE
+    // =====================================================
+
+    private void showError(String message) {
+
+        JOptionPane.showMessageDialog(
+                this,
+                message,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+        );
+    }
+
+
+    // =====================================================
+    // CLEAR FIELDS
+    // =====================================================
+
+    private void clearFields() {
+
+        bookingIdField.setText("");
+        userIdField.setText("");
+        eventIdField.setText("");
+        ticketTypeIdField.setText("");
+        quantityField.setText("");
+        totalAmountField.setText("");
+    }
+
+
     public static void main(String[] args) {
+
         new BookingForm();
     }
 }

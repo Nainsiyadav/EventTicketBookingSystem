@@ -7,34 +7,65 @@ public class TestUser {
 
     public static void main(String[] args) {
 
-        // Create User object
+        UserService service = new UserService();
+
+        // ================= ADD USER =================
+
         User user = new User(
-                "Shristi",
-                "shristi@gmail.com",
+                "Test User",
+                "test@gmail.com",
                 "9876543210",
                 "123456"
         );
 
-        // Create UserService object
-        UserService service = new UserService();
+        boolean addResult = service.addUser(user);
 
-        // Add user to database
-        //service.addUser(user);
+        System.out.println(
+                addResult
+                        ? "User Added Successfully!"
+                        : "User could not be added."
+        );
 
 
-        // View all users
-        service.viewUsers();
-        user.setUserId(3);
-        user.setName("Shristi Pandey");
-        user.setEmail("shristi.pandey@gmail.com");
-        user.setPhone("9999999999");
-
-        service.updateUser(user);
+        // ================= VIEW USERS =================
 
         service.viewUsers();
-        //Delete user
-        service.deleteUser(3);
 
-        service.viewUsers();
+
+        // ================= UPDATE =================
+        // Test karne ke liye actual User ID use karo
+
+        /*
+        user.setUserId(1);
+
+        user.setName("Updated User");
+        user.setEmail("updated@gmail.com");
+        user.setphone("9999999999");
+        user.setPassword("654321");
+
+        boolean updateResult =
+                service.updateUser(user, "123456");
+
+        System.out.println(
+                updateResult
+                        ? "User Updated Successfully!"
+                        : "User Update Failed!"
+        );
+        */
+
+
+        // ================= DELETE =================
+        // Test karne ke liye actual User ID use karo
+
+        /*
+        boolean deleteResult =
+                service.deleteUser(1, "123456");
+
+        System.out.println(
+                deleteResult
+                        ? "User Deleted Successfully!"
+                        : "User Delete Failed!"
+        );
+        */
     }
 }

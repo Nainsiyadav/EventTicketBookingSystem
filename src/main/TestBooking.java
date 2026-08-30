@@ -7,38 +7,52 @@ public class TestBooking {
 
     public static void main(String[] args) {
 
-        // Create Booking object
-        Booking booking = new Booking(
-                1,      // user_id
-                1,      // event_id
-                1,      // ticket_type_id
-                2,      // quantity
-                1000.0  // total_amount
-        );
-
-        // Create BookingService object
         BookingService service = new BookingService();
 
-        // Add booking
-       // service.addBooking(booking);
+        // ================= ADD BOOKING TEST =================
 
-        // View all bookings
-        service.viewBookings();
+        Booking booking = new Booking(
+                1,      // User ID
+                1,      // Event ID
+                1,      // Ticket Type ID
+                2,      // Quantity
+                1000.0  // Total Amount
+        );
 
-        booking.setBookingId(2);
-        booking.setQuantity(3);
-        booking.setTotalAmount(1500.0);
+        String result = service.addBooking(booking);
 
-        service.updateBooking(booking);
+        System.out.println(result);
 
-        service.viewBookings();
 
-        service.deleteBooking(2);
-
-        service.viewBookings();
-
-        service.deleteBooking(2);
+        // ================= VIEW BOOKINGS =================
 
         service.viewBookings();
+
+
+        // ================= UPDATE TEST =================
+        // Agar update test karna ho to Booking ID set karo
+
+        /*
+        booking.setBookingId(1);
+
+        booking.setQuantity(1);
+        booking.setTotalAmount(500.0);
+
+        String updateResult =
+                service.updateBooking(booking, "123456");
+
+        System.out.println(updateResult);
+        */
+
+
+        // ================= DELETE TEST =================
+        // Agar delete test karna ho:
+
+        /*
+        String deleteResult =
+                service.deleteBooking(1, "123456");
+
+        System.out.println(deleteResult);
+        */
     }
 }
