@@ -12,7 +12,10 @@ import java.util.List;
 
 public class PaymentService implements PaymentOperations {
 
+    // =========================
     // CREATE - Add Payment
+    // =========================
+
     @Override
     public boolean addPayment(Payment payment) {
 
@@ -32,12 +35,20 @@ public class PaymentService implements PaymentOperations {
             return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
-            System.out.println("Error adding payment: " + e.getMessage());
+
+            System.out.println(
+                    "Error adding payment: " + e.getMessage()
+            );
+
             return false;
         }
     }
 
+
+    // =========================
     // READ - Get All Payments
+    // =========================
+
     @Override
     public List<Payment> getAllPayments() {
 
@@ -53,15 +64,26 @@ public class PaymentService implements PaymentOperations {
 
                 Payment payment = new Payment();
 
-                payment.setPaymentId(rs.getInt("payment_id"));
-                payment.setBookingId(rs.getInt("booking_id"));
-                payment.setAmount(rs.getDouble("amount"));
+                payment.setPaymentId(
+                        rs.getInt("payment_id")
+                );
+
+                payment.setBookingId(
+                        rs.getInt("booking_id")
+                );
+
+                payment.setAmount(
+                        rs.getDouble("amount")
+                );
+
                 payment.setPaymentMethod(
                         rs.getString("payment_method")
                 );
+
                 payment.setPaymentStatus(
                         rs.getString("payment_status")
                 );
+
                 payment.setPaymentDate(
                         rs.getString("payment_date")
                 );
@@ -70,44 +92,117 @@ public class PaymentService implements PaymentOperations {
             }
 
         } catch (Exception e) {
-            System.out.println("Error fetching payments: " + e.getMessage());
+
+            System.out.println(
+                    "Error fetching payments: " + e.getMessage()
+            );
         }
 
         return payments;
     }
 
+
+    // =========================
+    // GET BOOKING AMOUNT
+    // =========================
+
+    public double getBookingAmount(int bookingId) {
+
+        String sql =
+                "SELECT total_amount FROM bookings WHERE booking_id = ?";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, bookingId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                if (rs.next()) {
+
+                    return rs.getDouble("total_amount");
+                }
+            }
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "Error fetching booking amount: "
+                            + e.getMessage()
+            );
+        }
+
+        // Booking ID not found
+        return -1;
+    }
+
+
+    // =========================
     // UPDATE - Update Payment
+    // =========================
+
     @Override
     public boolean updatePayment(Payment payment) {
 
-        String sql = "UPDATE payments SET " +
-                "booking_id = ?, amount = ?, payment_method = ?, " +
-                "payment_status = ?, payment_date = ? " +
+        String sql =
+                "UPDATE payments SET " +
+                "booking_id = ?, " +
+                "amount = ?, " +
+                "payment_method = ?, " +
+                "payment_status = ?, " +
+                "payment_date = ? " +
                 "WHERE payment_id = ?";
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, payment.getBookingId());
+
             ps.setDouble(2, payment.getAmount());
-            ps.setString(3, payment.getPaymentMethod());
-            ps.setString(4, payment.getPaymentStatus());
-            ps.setString(5, payment.getPaymentDate());
-            ps.setInt(6, payment.getPaymentId());
+
+            ps.setString(
+                    3,
+                    payment.getPaymentMethod()
+            );
+
+            ps.setString(
+                    4,
+                    payment.getPaymentStatus()
+            );
+
+            ps.setString(
+                    5,
+                    payment.getPaymentDate()
+            );
+
+            ps.setInt(
+                    6,
+                    payment.getPaymentId()
+            );
 
             return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
-            System.out.println("Error updating payment: " + e.getMessage());
+
+            System.out.println(
+                    "Error updating payment: "
+                            + e.getMessage()
+            );
+
             return false;
         }
     }
 
+
+    // =========================
     // DELETE - Delete Payment
+    // =========================
+
     @Override
     public boolean deletePayment(int paymentId) {
 
-        String sql = "DELETE FROM payments WHERE payment_id = ?";
+        String sql =
+                "DELETE FROM payments WHERE payment_id = ?";
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -117,7 +212,12 @@ public class PaymentService implements PaymentOperations {
             return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
-            System.out.println("Error deleting payment: " + e.getMessage());
+
+            System.out.println(
+                    "Error deleting payment: "
+                            + e.getMessage()
+            );
+
             return false;
         }
     }

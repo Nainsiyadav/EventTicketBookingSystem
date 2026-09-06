@@ -43,6 +43,11 @@ public class EventForm extends JFrame implements ActionListener {
 
         createGUI();
         loadEvents();
+        // Load reports
+
+
+        // Show window
+        setVisible(true);
     }
 
     private void createGUI() {
