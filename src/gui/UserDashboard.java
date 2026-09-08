@@ -9,7 +9,6 @@ public class UserDashboard extends JFrame {
     private String userName;
 
     private JButton viewEventsButton;
-    private JButton bookingButton;
     private JButton myBookingsButton;
     private JButton logoutButton;
 
@@ -69,25 +68,13 @@ public class UserDashboard extends JFrame {
         add(viewEventsButton);
 
 
-        // ================= BOOK TICKET =================
-
-        bookingButton =
-                new JButton("Book Ticket");
-
-        bookingButton.setBounds(
-                400, 170, 230, 55
-        );
-
-        add(bookingButton);
-
-
         // ================= MY BOOKINGS =================
 
         myBookingsButton =
                 new JButton("My Bookings");
 
         myBookingsButton.setBounds(
-                100, 260, 230, 55
+                400, 170, 230, 55
         );
 
         add(myBookingsButton);
@@ -99,7 +86,7 @@ public class UserDashboard extends JFrame {
                 new JButton("Logout");
 
         logoutButton.setBounds(
-                400, 260, 230, 55
+                250, 260, 230, 55
         );
 
         add(logoutButton);
@@ -107,31 +94,9 @@ public class UserDashboard extends JFrame {
 
         // ================= VIEW EVENTS ACTION =================
 
-            viewEventsButton.addActionListener(e -> {
+        viewEventsButton.addActionListener(e -> {
 
-           new UserEventForm(userId).setVisible(true);
-
-         });
-
-
-        // ================= BOOKING ACTION =================
-
-        bookingButton.addActionListener(e -> {
-
-            try {
-
-                new BookingForm();
-
-            } catch (Exception ex) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Unable to open Booking Management.\n"
-                                + ex.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
+            new UserEventForm(userId).setVisible(true);
 
         });
 
@@ -140,10 +105,7 @@ public class UserDashboard extends JFrame {
 
         myBookingsButton.addActionListener(e -> {
 
-            
-                    
-                   new MyBookingsForm(userId).setVisible(true);
-           
+            new MyBookingsForm(userId).setVisible(true);
 
         });
 
@@ -161,7 +123,7 @@ public class UserDashboard extends JFrame {
 
             if (choice == JOptionPane.YES_OPTION) {
 
-                new UserLogin();
+                new MainLogin().setVisible(true);
 
                 dispose();
             }
@@ -183,5 +145,6 @@ public class UserDashboard extends JFrame {
             ).setVisible(true);
 
         });
+
     }
 }

@@ -130,7 +130,11 @@ public class BookingService implements BookingOperations {
                     "(user_id, event_id, ticket_type_id, quantity, total_amount) " +
                     "VALUES (?, ?, ?, ?, ?)";
 
-            try (PreparedStatement ps = con.prepareStatement(insertSql)) {
+             try (PreparedStatement ps =
+                con.prepareStatement(
+                        insertSql,
+                        java.sql.Statement.RETURN_GENERATED_KEYS
+                        )) {
 
                 ps.setInt(1, booking.getUserId());
                 ps.setInt(2, booking.getEventId());
@@ -141,10 +145,25 @@ public class BookingService implements BookingOperations {
                 int rows = ps.executeUpdate();
 
                 if (rows == 0) {
-
                     con.rollback();
-
                     return "Booking could not be added.";
+                }
+
+                // Get AUTO_INCREMENT booking ID
+                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+
+                    if (generatedKeys.next()) {
+
+                        int bookingId =
+                                generatedKeys.getInt(1);
+
+                        booking.setBookingId(bookingId);
+
+                    } else {
+
+                        con.rollback();
+                        return "Booking ID could not be generated.";
+                    }
                 }
             }
 

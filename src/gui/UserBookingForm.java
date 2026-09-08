@@ -1,6 +1,6 @@
 package gui;
 
-import database.DBConnection;
+import  database.DBConnection;
 import model.Booking;
 import service.BookingService;
 
@@ -31,6 +31,10 @@ public class UserBookingForm extends JFrame {
     // Selected ticket information
     private int selectedTicketTypeId = -1;
     private double selectedTicketPrice = 0.0;
+
+    // =====================================================
+    // CONSTRUCTOR
+    // =====================================================
 
     public UserBookingForm(int userId, int eventId) {
 
@@ -347,7 +351,6 @@ public class UserBookingForm extends JFrame {
                 );
 
                 bookButton.setEnabled(false);
-
             }
 
         } catch (Exception e) {
@@ -371,84 +374,85 @@ public class UserBookingForm extends JFrame {
 
     private void updateTicketDetails() {
 
-    if (ticketTypeCombo.getSelectedItem() == null) {
+        if (ticketTypeCombo.getSelectedItem() == null) {
 
-        selectedTicketTypeId = -1;
-        selectedTicketPrice = 0.0;
+            selectedTicketTypeId = -1;
+            selectedTicketPrice = 0.0;
 
-        priceLabel.setText(
-                "Ticket Price: ₹0.00"
-        );
+            priceLabel.setText(
+                    "Ticket Price: ₹0.00"
+            );
 
-        totalLabel.setText(
-                "Total Amount: ₹0.00"
-        );
+            totalLabel.setText(
+                    "Total Amount: ₹0.00"
+            );
 
-        return;
+            return;
+        }
+
+        String selected =
+                ticketTypeCombo
+                        .getSelectedItem()
+                        .toString();
+
+        try {
+
+            // Example:
+            // 8 - VIP - ₹1000.0 (50 available)
+
+            String[] parts =
+                    selected.split(" - ");
+
+            // Ticket Type ID
+            selectedTicketTypeId =
+                    Integer.parseInt(
+                            parts[0].trim()
+                    );
+
+            // Remove ₹ and available quantity
+            String pricePart =
+                    parts[2]
+                            .replace("₹", "")
+                            .trim();
+
+            // Remove "(50 available)"
+            pricePart =
+                    pricePart.split("\\(")[0]
+                            .trim();
+
+            // Ticket price
+            selectedTicketPrice =
+                    Double.parseDouble(pricePart);
+
+            priceLabel.setText(
+                    String.format(
+                            "Ticket Price: ₹%.2f",
+                            selectedTicketPrice
+                    )
+            );
+
+            calculateTotal();
+
+        } catch (Exception e) {
+
+            selectedTicketTypeId = -1;
+            selectedTicketPrice = 0.0;
+
+            priceLabel.setText(
+                    "Ticket Price: ₹0.00"
+            );
+
+            totalLabel.setText(
+                    "Total Amount: ₹0.00"
+            );
+
+            System.out.println(
+                    "Ticket selection error: "
+                    + e.getMessage()
+            );
+        }
     }
 
-    String selected =
-            ticketTypeCombo
-                    .getSelectedItem()
-                    .toString();
-
-    try {
-
-        // Example:
-        // 8 - VIP - ₹1000.0 (50 available)
-
-        String[] parts =
-                selected.split(" - ");
-
-        // Ticket Type ID
-        selectedTicketTypeId =
-                Integer.parseInt(
-                        parts[0].trim()
-                );
-
-        // Remove ₹ and available quantity
-        String pricePart =
-                parts[2]
-                        .replace("₹", "")
-                        .trim();
-
-        // Remove "(50 available)"
-        pricePart =
-                pricePart.split("\\(")[0]
-                        .trim();
-
-        // Ticket price
-        selectedTicketPrice =
-                Double.parseDouble(pricePart);
-
-        priceLabel.setText(
-                String.format(
-                        "Ticket Price: ₹%.2f",
-                        selectedTicketPrice
-                )
-        );
-
-        calculateTotal();
-
-    } catch (Exception e) {
-
-        selectedTicketTypeId = -1;
-        selectedTicketPrice = 0.0;
-
-        priceLabel.setText(
-                "Ticket Price: ₹0.00"
-        );
-
-        totalLabel.setText(
-                "Total Amount: ₹0.00"
-        );
-
-        System.out.println(
-                "Ticket selection error: "
-                + e.getMessage()
-        );
-    }
-}
 
     // =====================================================
     // CALCULATE TOTAL
@@ -465,7 +469,6 @@ public class UserBookingForm extends JFrame {
                                     .trim()
                     );
 
-
             if (quantity <= 0) {
 
                 totalLabel.setText(
@@ -475,10 +478,8 @@ public class UserBookingForm extends JFrame {
                 return;
             }
 
-
             double total =
                     selectedTicketPrice * quantity;
-
 
             totalLabel.setText(
                     String.format(
@@ -618,19 +619,42 @@ public class UserBookingForm extends JFrame {
                     bookingService.addBooking(booking);
 
 
+            // =================================================
+            // BOOKING SUCCESSFUL
+            // =================================================
+
             if (result.startsWith(
                     "Booking Added Successfully")) {
 
                 JOptionPane.showMessageDialog(
                         this,
-                        result,
+                        result
+                        + "\nBooking ID: "
+                        + booking.getBookingId(),
                         "Booking Successful",
                         JOptionPane.INFORMATION_MESSAGE
                 );
 
+
+                // =============================================
+                // OPEN PAYMENT FORM AUTOMATICALLY
+                // =============================================
+
+                new UserPaymentForm(
+                        userId,
+                        booking.getBookingId()
+                ).setVisible(true);
+
+
+                // Close booking form
                 dispose();
 
+
             } else {
+
+                // =========================
+                // BOOKING FAILED
+                // =========================
 
                 JOptionPane.showMessageDialog(
                         this,

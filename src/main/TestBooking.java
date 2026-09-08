@@ -12,11 +12,11 @@ public class TestBooking {
         // ================= ADD BOOKING TEST =================
 
         Booking booking = new Booking(
-                1,      // User ID
-                1,      // Event ID
-                1,      // Ticket Type ID
-                2,      // Quantity
-                1000.0  // Total Amount
+        1,      // User ID
+        1,      // Event ID
+        1,      // Ticket Type ID
+        2,      // Quantity
+        1000.0  // Total Amount
         );
 
         String result = service.addBooking(booking);
