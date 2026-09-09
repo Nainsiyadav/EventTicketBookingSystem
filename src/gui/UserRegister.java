@@ -28,81 +28,113 @@ public class UserRegister extends JFrame {
 
         // ================= TITLE =================
 
-        JLabel titleLabel = new JLabel("USER REGISTRATION");
+        JLabel titleLabel = new JLabel(
+                "USER REGISTRATION",
+                SwingConstants.CENTER
+        );
+
         titleLabel.setFont(
                 new Font("Arial", Font.BOLD, 25)
         );
-        titleLabel.setBounds(130, 40, 280, 40);
+
+        titleLabel.setForeground(
+                new Color(25, 55, 90)
+        );
+
+        titleLabel.setBounds(110, 40, 280, 40);
+
         add(titleLabel);
 
 
         // ================= NAME =================
 
         JLabel nameLabel = new JLabel("Name:");
-        nameLabel.setFont(
-                new Font("Arial", Font.BOLD, 15)
-        );
+
+        styleLabel(nameLabel);
         nameLabel.setBounds(70, 110, 100, 30);
+
         add(nameLabel);
 
         nameField = new JTextField();
         nameField.setBounds(180, 110, 230, 30);
+
         add(nameField);
 
 
         // ================= EMAIL =================
 
         JLabel emailLabel = new JLabel("Email:");
-        emailLabel.setFont(
-                new Font("Arial", Font.BOLD, 15)
-        );
+
+        styleLabel(emailLabel);
         emailLabel.setBounds(70, 160, 100, 30);
+
         add(emailLabel);
 
         emailField = new JTextField();
         emailField.setBounds(180, 160, 230, 30);
+
         add(emailField);
 
 
         // ================= PHONE =================
 
         JLabel phoneLabel = new JLabel("Phone:");
-        phoneLabel.setFont(
-                new Font("Arial", Font.BOLD, 15)
-        );
+
+        styleLabel(phoneLabel);
         phoneLabel.setBounds(70, 210, 100, 30);
+
         add(phoneLabel);
 
         phoneField = new JTextField();
         phoneField.setBounds(180, 210, 230, 30);
+
         add(phoneField);
 
 
         // ================= PASSWORD =================
 
         JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setFont(
-                new Font("Arial", Font.BOLD, 15)
-        );
+
+        styleLabel(passwordLabel);
         passwordLabel.setBounds(70, 260, 100, 30);
+
         add(passwordLabel);
 
         passwordField = new JPasswordField();
         passwordField.setBounds(180, 260, 230, 30);
+
         add(passwordField);
 
 
         // ================= REGISTER BUTTON =================
 
         registerButton = new JButton("Register");
-        registerButton.setBounds(140, 330, 110, 35);
+
+        registerButton.setBounds(
+                140, 330, 110, 35
+        );
+
+        styleButton(
+                registerButton,
+                new Color(55, 140, 100)
+        );
+
         add(registerButton);
 
 
         // ================= BACK BUTTON =================
 
         backButton = new JButton("Back to Login");
-        backButton.setBounds(260, 330, 130, 35);
+
+        backButton.setBounds(
+                260, 330, 130, 35
+        );
+
+        styleButton(
+                backButton,
+                new Color(45, 85, 130)
+        );
+
         add(backButton);
 
 
@@ -124,6 +156,39 @@ public class UserRegister extends JFrame {
 
 
         setVisible(true);
+    }
+
+
+    // ================= LABEL STYLE =================
+
+    private void styleLabel(JLabel label) {
+
+        label.setFont(
+                new Font("Arial", Font.BOLD, 15)
+        );
+
+        label.setForeground(
+                new Color(70, 70, 70)
+        );
+    }
+
+
+    // ================= BUTTON STYLE =================
+
+    private void styleButton(
+            JButton button,
+            Color color
+    ) {
+
+        button.setFont(
+                new Font("Arial", Font.BOLD, 14)
+        );
+
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
     }
 
 
@@ -309,7 +374,6 @@ public class UserRegister extends JFrame {
 
 
                 // Go to User Login
-
                 new UserLogin();
 
                 dispose();

@@ -22,7 +22,6 @@ public class AdminForm extends JFrame implements ActionListener {
 
     public AdminForm() {
 
-        // Frame Settings
         setTitle("Admin Management");
         setSize(600, 520);
         setLayout(null);
@@ -35,12 +34,16 @@ public class AdminForm extends JFrame implements ActionListener {
 
         titleLabel = new JLabel("ADMIN MANAGEMENT");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
-        titleLabel.setBounds(180, 30, 300, 30);
+        titleLabel.setForeground(new Color(25, 55, 90));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        titleLabel.setBounds(150, 30, 300, 30);
         add(titleLabel);
 
         // ================= ADMIN ID =================
 
         idLabel = new JLabel("Admin ID:");
+        idLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        idLabel.setForeground(new Color(70, 70, 70));
         idLabel.setBounds(80, 90, 120, 25);
 
         idField = new JTextField();
@@ -52,6 +55,8 @@ public class AdminForm extends JFrame implements ActionListener {
         // ================= NAME =================
 
         nameLabel = new JLabel("Name:");
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        nameLabel.setForeground(new Color(70, 70, 70));
         nameLabel.setBounds(80, 130, 120, 25);
 
         nameField = new JTextField();
@@ -63,6 +68,8 @@ public class AdminForm extends JFrame implements ActionListener {
         // ================= EMAIL =================
 
         emailLabel = new JLabel("Email:");
+        emailLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        emailLabel.setForeground(new Color(70, 70, 70));
         emailLabel.setBounds(80, 170, 120, 25);
 
         emailField = new JTextField();
@@ -74,6 +81,8 @@ public class AdminForm extends JFrame implements ActionListener {
         // ================= PASSWORD =================
 
         passwordLabel = new JLabel("Password:");
+        passwordLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        passwordLabel.setForeground(new Color(70, 70, 70));
         passwordLabel.setBounds(80, 210, 120, 25);
 
         passwordField = new JPasswordField();
@@ -85,6 +94,8 @@ public class AdminForm extends JFrame implements ActionListener {
         // ================= ROLE =================
 
         roleLabel = new JLabel("Role:");
+        roleLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        roleLabel.setForeground(new Color(70, 70, 70));
         roleLabel.setBounds(80, 250, 120, 25);
 
         roleField = new JTextField();
@@ -98,15 +109,33 @@ public class AdminForm extends JFrame implements ActionListener {
 
         addButton = new JButton("Add");
         addButton.setBounds(80, 320, 100, 35);
+        addButton.setBackground(new Color(45, 85, 130));
+        addButton.setForeground(Color.WHITE);
 
         updateButton = new JButton("Update");
         updateButton.setBounds(190, 320, 100, 35);
+        updateButton.setBackground(new Color(45, 85, 130));
+        updateButton.setForeground(Color.WHITE);
 
         deleteButton = new JButton("Delete");
         deleteButton.setBounds(300, 320, 100, 35);
+        deleteButton.setBackground(new Color(190, 70, 70));
+        deleteButton.setForeground(Color.WHITE);
 
         viewButton = new JButton("View Admins");
         viewButton.setBounds(190, 370, 130, 35);
+        viewButton.setBackground(new Color(55, 140, 100));
+        viewButton.setForeground(Color.WHITE);
+
+        addButton.setFocusPainted(false);
+        updateButton.setFocusPainted(false);
+        deleteButton.setFocusPainted(false);
+        viewButton.setFocusPainted(false);
+
+        addButton.setBorderPainted(false);
+        updateButton.setBorderPainted(false);
+        deleteButton.setBorderPainted(false);
+        viewButton.setBorderPainted(false);
 
         addButton.addActionListener(this);
         updateButton.addActionListener(this);
@@ -136,7 +165,6 @@ public class AdminForm extends JFrame implements ActionListener {
                         new String(passwordField.getPassword());
                 String role = roleField.getText().trim();
 
-                // Empty field validation
                 if (name.isEmpty() ||
                     email.isEmpty() ||
                     password.isEmpty() ||
@@ -152,7 +180,6 @@ public class AdminForm extends JFrame implements ActionListener {
                     return;
                 }
 
-                // Email validation
                 if (!email.contains("@") || !email.contains(".")) {
 
                     JOptionPane.showMessageDialog(

@@ -35,6 +35,10 @@ public class UserDashboard extends JFrame {
                 new Font("Arial", Font.BOLD, 26)
         );
 
+        titleLabel.setForeground(
+                new Color(25, 55, 90)
+        );
+
         titleLabel.setBounds(100, 40, 550, 40);
 
         add(titleLabel);
@@ -51,6 +55,10 @@ public class UserDashboard extends JFrame {
                 new Font("Arial", Font.BOLD, 20)
         );
 
+        welcomeLabel.setForeground(
+                new Color(70, 70, 70)
+        );
+
         welcomeLabel.setBounds(200, 90, 350, 35);
 
         add(welcomeLabel);
@@ -58,11 +66,15 @@ public class UserDashboard extends JFrame {
 
         // ================= VIEW EVENTS =================
 
-        viewEventsButton =
-                new JButton("View Events");
+        viewEventsButton = new JButton("View Events");
 
         viewEventsButton.setBounds(
                 100, 170, 230, 55
+        );
+
+        styleButton(
+                viewEventsButton,
+                new Color(45, 85, 130)
         );
 
         add(viewEventsButton);
@@ -70,11 +82,15 @@ public class UserDashboard extends JFrame {
 
         // ================= MY BOOKINGS =================
 
-        myBookingsButton =
-                new JButton("My Bookings");
+        myBookingsButton = new JButton("My Bookings");
 
         myBookingsButton.setBounds(
                 400, 170, 230, 55
+        );
+
+        styleButton(
+                myBookingsButton,
+                new Color(55, 140, 100)
         );
 
         add(myBookingsButton);
@@ -82,11 +98,15 @@ public class UserDashboard extends JFrame {
 
         // ================= LOGOUT =================
 
-        logoutButton =
-                new JButton("Logout");
+        logoutButton = new JButton("Logout");
 
         logoutButton.setBounds(
                 250, 260, 230, 55
+        );
+
+        styleButton(
+                logoutButton,
+                new Color(190, 70, 70)
         );
 
         add(logoutButton);
@@ -130,6 +150,22 @@ public class UserDashboard extends JFrame {
 
         });
 
+    }
+
+
+    // ================= BUTTON STYLE =================
+
+    private void styleButton(JButton button, Color color) {
+
+        button.setFont(
+                new Font("Arial", Font.BOLD, 16)
+        );
+
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
     }
 
 

@@ -36,12 +36,16 @@ public class BookingForm extends JFrame implements ActionListener {
 
         titleLabel = new JLabel("BOOKING MANAGEMENT");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
-        titleLabel.setBounds(170, 30, 300, 30);
+        titleLabel.setForeground(new Color(25, 55, 90));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        titleLabel.setBounds(150, 30, 300, 30);
         add(titleLabel);
 
         // ================= BOOKING ID =================
 
         bookingIdLabel = new JLabel("Booking ID:");
+        bookingIdLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        bookingIdLabel.setForeground(new Color(70, 70, 70));
         bookingIdLabel.setBounds(80, 90, 120, 25);
 
         bookingIdField = new JTextField();
@@ -53,6 +57,8 @@ public class BookingForm extends JFrame implements ActionListener {
         // ================= USER ID =================
 
         userIdLabel = new JLabel("User ID:");
+        userIdLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        userIdLabel.setForeground(new Color(70, 70, 70));
         userIdLabel.setBounds(80, 130, 120, 25);
 
         userIdField = new JTextField();
@@ -64,6 +70,8 @@ public class BookingForm extends JFrame implements ActionListener {
         // ================= EVENT ID =================
 
         eventIdLabel = new JLabel("Event ID:");
+        eventIdLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        eventIdLabel.setForeground(new Color(70, 70, 70));
         eventIdLabel.setBounds(80, 170, 120, 25);
 
         eventIdField = new JTextField();
@@ -75,6 +83,8 @@ public class BookingForm extends JFrame implements ActionListener {
         // ================= TICKET TYPE =================
 
         ticketTypeIdLabel = new JLabel("Ticket Type ID:");
+        ticketTypeIdLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        ticketTypeIdLabel.setForeground(new Color(70, 70, 70));
         ticketTypeIdLabel.setBounds(80, 210, 120, 25);
 
         ticketTypeIdField = new JTextField();
@@ -86,6 +96,8 @@ public class BookingForm extends JFrame implements ActionListener {
         // ================= QUANTITY =================
 
         quantityLabel = new JLabel("Quantity:");
+        quantityLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        quantityLabel.setForeground(new Color(70, 70, 70));
         quantityLabel.setBounds(80, 250, 120, 25);
 
         quantityField = new JTextField();
@@ -97,6 +109,8 @@ public class BookingForm extends JFrame implements ActionListener {
         // ================= TOTAL AMOUNT =================
 
         totalAmountLabel = new JLabel("Total Amount:");
+        totalAmountLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        totalAmountLabel.setForeground(new Color(70, 70, 70));
         totalAmountLabel.setBounds(80, 290, 120, 25);
 
         totalAmountField = new JTextField();
@@ -109,15 +123,33 @@ public class BookingForm extends JFrame implements ActionListener {
 
         addButton = new JButton("Add");
         addButton.setBounds(90, 360, 100, 35);
+        addButton.setBackground(new Color(45, 85, 130));
+        addButton.setForeground(Color.WHITE);
 
         updateButton = new JButton("Update");
         updateButton.setBounds(200, 360, 100, 35);
+        updateButton.setBackground(new Color(45, 85, 130));
+        updateButton.setForeground(Color.WHITE);
 
         deleteButton = new JButton("Delete");
         deleteButton.setBounds(310, 360, 100, 35);
+        deleteButton.setBackground(new Color(190, 70, 70));
+        deleteButton.setForeground(Color.WHITE);
 
         viewButton = new JButton("View Bookings");
         viewButton.setBounds(200, 410, 130, 35);
+        viewButton.setBackground(new Color(55, 140, 100));
+        viewButton.setForeground(Color.WHITE);
+
+        addButton.setFocusPainted(false);
+        updateButton.setFocusPainted(false);
+        deleteButton.setFocusPainted(false);
+        viewButton.setFocusPainted(false);
+
+        addButton.setBorderPainted(false);
+        updateButton.setBorderPainted(false);
+        deleteButton.setBorderPainted(false);
+        viewButton.setBorderPainted(false);
 
         addButton.addActionListener(this);
         updateButton.addActionListener(this);
@@ -132,10 +164,7 @@ public class BookingForm extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-
-    // =====================================================
-    // BUTTON ACTIONS
-    // =====================================================
+    // ================= BUTTON ACTIONS =================
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -208,7 +237,6 @@ public class BookingForm extends JFrame implements ActionListener {
                     clearFields();
 
                 } else {
-
                     showError(result);
                 }
 
@@ -220,7 +248,6 @@ public class BookingForm extends JFrame implements ActionListener {
                 );
             }
         }
-
 
         // ================= UPDATE =================
 
@@ -276,7 +303,6 @@ public class BookingForm extends JFrame implements ActionListener {
                 double totalAmount =
                         Double.parseDouble(totalAmountField.getText().trim());
 
-                // Password dialog
                 JPasswordField passwordField =
                         new JPasswordField();
 
@@ -325,7 +351,6 @@ public class BookingForm extends JFrame implements ActionListener {
                     clearFields();
 
                 } else {
-
                     showError(result);
                 }
 
@@ -336,7 +361,6 @@ public class BookingForm extends JFrame implements ActionListener {
                 );
             }
         }
-
 
         // ================= DELETE =================
 
@@ -354,7 +378,6 @@ public class BookingForm extends JFrame implements ActionListener {
                                 bookingIdField.getText().trim()
                         );
 
-                // Password dialog
                 JPasswordField passwordField =
                         new JPasswordField();
 
@@ -396,7 +419,6 @@ public class BookingForm extends JFrame implements ActionListener {
                     clearFields();
 
                 } else {
-
                     showError(result);
                 }
 
@@ -405,7 +427,6 @@ public class BookingForm extends JFrame implements ActionListener {
                 showError("Please enter a valid Booking ID.");
             }
         }
-
 
         // ================= VIEW =================
 
@@ -422,10 +443,7 @@ public class BookingForm extends JFrame implements ActionListener {
         }
     }
 
-
-    // =====================================================
-    // ERROR MESSAGE
-    // =====================================================
+    // ================= ERROR MESSAGE =================
 
     private void showError(String message) {
 
@@ -437,10 +455,7 @@ public class BookingForm extends JFrame implements ActionListener {
         );
     }
 
-
-    // =====================================================
-    // CLEAR FIELDS
-    // =====================================================
+    // ================= CLEAR FIELDS =================
 
     private void clearFields() {
 
@@ -452,9 +467,7 @@ public class BookingForm extends JFrame implements ActionListener {
         totalAmountField.setText("");
     }
 
-
     public static void main(String[] args) {
-
         new BookingForm();
     }
 }

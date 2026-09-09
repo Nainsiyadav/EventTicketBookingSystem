@@ -7,20 +7,12 @@ import java.awt.event.ActionListener;
 
 public class Dashboard extends JFrame implements ActionListener {
 
-    JLabel titleLabel;
-    JLabel welcomeLabel;
+    JLabel titleLabel, welcomeLabel;
 
-    JButton adminButton;
-    JButton userButton;
-    JButton eventButton;
-    JButton bookingButton;
-    JButton paymentButton;
-    JButton reportButton;
-    JButton logoutButton;
+    JButton adminButton, userButton, eventButton,
+            bookingButton, paymentButton, reportButton, logoutButton;
 
-    public Dashboard() {
-
-        // ================= FRAME =================
+    public  Dashboard() {
 
         setTitle("Event Ticket Booking System - Dashboard");
         setSize(850, 600);
@@ -32,75 +24,82 @@ public class Dashboard extends JFrame implements ActionListener {
 
         titleLabel = new JLabel("EVENT TICKET BOOKING SYSTEM");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
-        titleLabel.setBounds(220, 30, 500, 40);
-
+        titleLabel.setForeground(new Color(25, 55, 90));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        titleLabel.setBounds(175, 30, 500, 40);
         add(titleLabel);
 
         // ================= WELCOME =================
 
         welcomeLabel = new JLabel("Welcome, Admin!");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        welcomeLabel.setBounds(350, 85, 200, 30);
-
+        welcomeLabel.setForeground(new Color(70, 70, 70));
+        welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        welcomeLabel.setBounds(325, 85, 200, 30);
         add(welcomeLabel);
 
         // ================= ADMIN =================
 
         adminButton = new JButton("Admin Management");
         adminButton.setBounds(80, 150, 200, 50);
+        adminButton.setBackground(new Color(45, 85, 130));
+        adminButton.setForeground(Color.WHITE);
         adminButton.addActionListener(this);
-
         add(adminButton);
 
         // ================= USER =================
 
         userButton = new JButton("User Management");
         userButton.setBounds(320, 150, 200, 50);
+        userButton.setBackground(new Color(55, 140, 100));
+        userButton.setForeground(Color.WHITE);
         userButton.addActionListener(this);
-
         add(userButton);
 
         // ================= EVENT =================
 
         eventButton = new JButton("Event Management");
         eventButton.setBounds(560, 150, 200, 50);
+        eventButton.setBackground(new Color(120, 80, 150));
+        eventButton.setForeground(Color.WHITE);
         eventButton.addActionListener(this);
-
         add(eventButton);
 
         // ================= BOOKING =================
 
         bookingButton = new JButton("Booking Management");
         bookingButton.setBounds(80, 240, 200, 50);
+        bookingButton.setBackground(new Color(210, 130, 50));
+        bookingButton.setForeground(Color.WHITE);
         bookingButton.addActionListener(this);
-
         add(bookingButton);
 
         // ================= PAYMENT =================
 
         paymentButton = new JButton("Payment Management");
         paymentButton.setBounds(320, 240, 200, 50);
+        paymentButton.setBackground(new Color(40, 130, 130));
+        paymentButton.setForeground(Color.WHITE);
         paymentButton.addActionListener(this);
-
         add(paymentButton);
 
         // ================= REPORT =================
 
         reportButton = new JButton("Reports");
         reportButton.setBounds(560, 240, 200, 50);
+        reportButton.setBackground(new Color(70, 90, 120));
+        reportButton.setForeground(Color.WHITE);
         reportButton.addActionListener(this);
-
         add(reportButton);
 
         // ================= LOGOUT =================
 
         logoutButton = new JButton("Logout");
         logoutButton.setBounds(325, 360, 200, 50);
+        logoutButton.setBackground(new Color(190, 70, 70));
+        logoutButton.setForeground(Color.WHITE);
         logoutButton.addActionListener(this);
-
         add(logoutButton);
-
-        // ================= FRAME VISIBLE =================
 
         setVisible(true);
     }
@@ -110,47 +109,33 @@ public class Dashboard extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        // ADMIN MANAGEMENT
         if (e.getSource() == adminButton) {
-
             new AdminForm();
         }
 
-        // USER MANAGEMENT
         else if (e.getSource() == userButton) {
-
             new UserForm();
         }
 
-        // EVENT MANAGEMENT
         else if (e.getSource() == eventButton) {
-
             new EventForm();
         }
 
-        // BOOKING MANAGEMENT
         else if (e.getSource() == bookingButton) {
-
             new BookingForm();
         }
 
-        // PAYMENT MANAGEMENT
         else if (e.getSource() == paymentButton) {
-
             new PaymentForm();
         }
 
-        // REPORTS
-            else if (e.getSource() == reportButton) {
+        else if (e.getSource() == reportButton) {
 
-        System.out.println("Reports button clicked!");
+            System.out.println("Reports button clicked!");
+            new ReportForm();
+            System.out.println("ReportForm opened!");
+        }
 
-        new ReportForm();
-
-        System.out.println("ReportForm opened!");
-            }
-
-        // LOGOUT
         else if (e.getSource() == logoutButton) {
 
             int choice = JOptionPane.showConfirmDialog(
@@ -163,7 +148,6 @@ public class Dashboard extends JFrame implements ActionListener {
             if (choice == JOptionPane.YES_OPTION) {
 
                 dispose();
-
                 new AdminLogin();
             }
         }
@@ -172,7 +156,6 @@ public class Dashboard extends JFrame implements ActionListener {
     // ================= MAIN =================
 
     public static void main(String[] args) {
-
         new Dashboard();
     }
 }

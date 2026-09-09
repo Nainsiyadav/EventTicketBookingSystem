@@ -13,19 +13,10 @@ import java.util.List;
 
 public class EventForm extends JFrame implements ActionListener {
 
-    private JTextField txtEventId;
-    private JTextField txtEventName;
-    private JTextField txtEventDate;
-    private JTextField txtEventTime;
-    private JTextField txtVenue;
-    private JTextField txtTicketPrice;
-    private JTextField txtTotalTickets;
+    private JTextField txtEventId, txtEventName, txtEventDate,
+            txtEventTime, txtVenue, txtTicketPrice, txtTotalTickets;
 
-    private JButton btnAdd;
-    private JButton btnUpdate;
-    private JButton btnDelete;
-    private JButton btnClear;
-    private JButton btnRefresh;
+    private JButton btnAdd, btnUpdate, btnDelete, btnClear, btnRefresh;
 
     private JTable eventTable;
     private DefaultTableModel tableModel;
@@ -43,10 +34,7 @@ public class EventForm extends JFrame implements ActionListener {
 
         createGUI();
         loadEvents();
-        // Load reports
 
-
-        // Show window
         setVisible(true);
     }
 
@@ -54,59 +42,53 @@ public class EventForm extends JFrame implements ActionListener {
 
         setLayout(new BorderLayout(10, 10));
 
-        // =========================
-        // TITLE
-        // =========================
+        // ================= TITLE =================
 
         JLabel title = new JLabel("EVENT MANAGEMENT", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 24));
+        title.setForeground(new Color(25, 55, 90));
 
         add(title, BorderLayout.NORTH);
 
-        // =========================
-        // FORM PANEL
-        // =========================
+        // ================= FORM PANEL =================
 
         JPanel formPanel = new JPanel(new GridLayout(7, 2, 10, 10));
-
         formPanel.setBorder(
                 BorderFactory.createEmptyBorder(15, 20, 15, 20)
         );
 
-        formPanel.add(new JLabel("Event ID:"));
+        formPanel.add(label("Event ID:"));
         txtEventId = new JTextField();
         txtEventId.setEditable(false);
         formPanel.add(txtEventId);
 
-        formPanel.add(new JLabel("Event Name:"));
+        formPanel.add(label("Event Name:"));
         txtEventName = new JTextField();
         formPanel.add(txtEventName);
 
-        formPanel.add(new JLabel("Event Date (YYYY-MM-DD):"));
+        formPanel.add(label("Event Date (YYYY-MM-DD):"));
         txtEventDate = new JTextField();
         formPanel.add(txtEventDate);
 
-        formPanel.add(new JLabel("Event Time (HH:MM:SS):"));
+        formPanel.add(label("Event Time (HH:MM:SS):"));
         txtEventTime = new JTextField();
         formPanel.add(txtEventTime);
 
-        formPanel.add(new JLabel("Venue:"));
+        formPanel.add(label("Venue:"));
         txtVenue = new JTextField();
         formPanel.add(txtVenue);
 
-        formPanel.add(new JLabel("Ticket Price:"));
+        formPanel.add(label("Ticket Price:"));
         txtTicketPrice = new JTextField();
         formPanel.add(txtTicketPrice);
 
-        formPanel.add(new JLabel("Total Tickets:"));
+        formPanel.add(label("Total Tickets:"));
         txtTotalTickets = new JTextField();
         formPanel.add(txtTotalTickets);
 
         add(formPanel, BorderLayout.WEST);
 
-        // =========================
-        // BUTTON PANEL
-        // =========================
+        // ================= BUTTON PANEL =================
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
 
@@ -115,6 +97,27 @@ public class EventForm extends JFrame implements ActionListener {
         btnDelete = new JButton("Delete");
         btnClear = new JButton("Clear");
         btnRefresh = new JButton("Refresh");
+
+        btnAdd.setBackground(new Color(45, 85, 130));
+        btnAdd.setForeground(Color.WHITE);
+
+        btnUpdate.setBackground(new Color(55, 140, 100));
+        btnUpdate.setForeground(Color.WHITE);
+
+        btnDelete.setBackground(new Color(190, 70, 70));
+        btnDelete.setForeground(Color.WHITE);
+
+        btnClear.setBackground(new Color(120, 120, 120));
+        btnClear.setForeground(Color.WHITE);
+
+        btnRefresh.setBackground(new Color(120, 80, 150));
+        btnRefresh.setForeground(Color.WHITE);
+
+        btnAdd.setFocusPainted(false);
+        btnUpdate.setFocusPainted(false);
+        btnDelete.setFocusPainted(false);
+        btnClear.setFocusPainted(false);
+        btnRefresh.setFocusPainted(false);
 
         btnAdd.addActionListener(this);
         btnUpdate.addActionListener(this);
@@ -128,18 +131,11 @@ public class EventForm extends JFrame implements ActionListener {
         buttonPanel.add(btnClear);
         buttonPanel.add(btnRefresh);
 
-        // =========================
-        // TABLE
-        // =========================
+        // ================= TABLE =================
 
         String[] columns = {
-                "Event ID",
-                "Event Name",
-                "Date",
-                "Time",
-                "Venue",
-                "Ticket Price",
-                "Total Tickets"
+                "Event ID", "Event Name", "Date", "Time",
+                "Venue", "Ticket Price", "Total Tickets"
         };
 
         tableModel = new DefaultTableModel(columns, 0) {
@@ -151,6 +147,14 @@ public class EventForm extends JFrame implements ActionListener {
         };
 
         eventTable = new JTable(tableModel);
+
+        eventTable.getTableHeader().setBackground(
+                new Color(45, 85, 130)
+        );
+        eventTable.getTableHeader().setForeground(Color.WHITE);
+        eventTable.getTableHeader().setFont(
+                new Font("Arial", Font.BOLD, 13)
+        );
 
         eventTable.setSelectionMode(
                 ListSelectionModel.SINGLE_SELECTION
@@ -167,27 +171,21 @@ public class EventForm extends JFrame implements ActionListener {
                     txtEventId.setText(
                             tableModel.getValueAt(row, 0).toString()
                     );
-
                     txtEventName.setText(
                             tableModel.getValueAt(row, 1).toString()
                     );
-
                     txtEventDate.setText(
                             tableModel.getValueAt(row, 2).toString()
                     );
-
                     txtEventTime.setText(
                             tableModel.getValueAt(row, 3).toString()
                     );
-
                     txtVenue.setText(
                             tableModel.getValueAt(row, 4).toString()
                     );
-
                     txtTicketPrice.setText(
                             tableModel.getValueAt(row, 5).toString()
                     );
-
                     txtTotalTickets.setText(
                             tableModel.getValueAt(row, 6).toString()
                     );
@@ -197,9 +195,7 @@ public class EventForm extends JFrame implements ActionListener {
 
         JScrollPane scrollPane = new JScrollPane(eventTable);
 
-        // =========================
-        // CENTER PANEL
-        // =========================
+        // ================= CENTER PANEL =================
 
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
 
@@ -209,35 +205,29 @@ public class EventForm extends JFrame implements ActionListener {
         add(centerPanel, BorderLayout.CENTER);
     }
 
-    // =========================
-    // ADD EVENT
-    // =========================
+    private JLabel label(String text) {
+
+        JLabel l = new JLabel(text);
+        l.setFont(new Font("Arial", Font.BOLD, 13));
+        l.setForeground(new Color(70, 70, 70));
+
+        return l;
+    }
+
+    // ================= ADD EVENT =================
 
     private void addEvent() {
 
-        if (!validateFields()) {
-            return;
-        }
+        if (!validateFields()) return;
 
         try {
 
             Event event = new Event();
 
-            event.setEventName(
-                    txtEventName.getText().trim()
-            );
-
-            event.setEventDate(
-                    txtEventDate.getText().trim()
-            );
-
-            event.setEventTime(
-                    txtEventTime.getText().trim()
-            );
-
-            event.setVenue(
-                    txtVenue.getText().trim()
-            );
+            event.setEventName(txtEventName.getText().trim());
+            event.setEventDate(txtEventDate.getText().trim());
+            event.setEventTime(txtEventTime.getText().trim());
+            event.setVenue(txtVenue.getText().trim());
 
             event.setTicketPrice(
                     Double.parseDouble(
@@ -280,9 +270,7 @@ public class EventForm extends JFrame implements ActionListener {
         }
     }
 
-    // =========================
-    // UPDATE EVENT
-    // =========================
+    // ================= UPDATE EVENT =================
 
     private void updateEvent() {
 
@@ -296,9 +284,7 @@ public class EventForm extends JFrame implements ActionListener {
             return;
         }
 
-        if (!validateFields()) {
-            return;
-        }
+        if (!validateFields()) return;
 
         try {
 
@@ -310,21 +296,10 @@ public class EventForm extends JFrame implements ActionListener {
                     )
             );
 
-            event.setEventName(
-                    txtEventName.getText().trim()
-            );
-
-            event.setEventDate(
-                    txtEventDate.getText().trim()
-            );
-
-            event.setEventTime(
-                    txtEventTime.getText().trim()
-            );
-
-            event.setVenue(
-                    txtVenue.getText().trim()
-            );
+            event.setEventName(txtEventName.getText().trim());
+            event.setEventDate(txtEventDate.getText().trim());
+            event.setEventTime(txtEventTime.getText().trim());
+            event.setVenue(txtVenue.getText().trim());
 
             event.setTicketPrice(
                     Double.parseDouble(
@@ -367,9 +342,7 @@ public class EventForm extends JFrame implements ActionListener {
         }
     }
 
-    // =========================
-    // DELETE EVENT
-    // =========================
+    // ================= DELETE EVENT =================
 
     private void deleteEvent() {
 
@@ -429,9 +402,7 @@ public class EventForm extends JFrame implements ActionListener {
         }
     }
 
-    // =========================
-    // LOAD EVENTS
-    // =========================
+    // ================= LOAD EVENTS =================
 
     private void loadEvents() {
 
@@ -456,9 +427,7 @@ public class EventForm extends JFrame implements ActionListener {
         }
     }
 
-    // =========================
-    // CLEAR FIELDS
-    // =========================
+    // ================= CLEAR FIELDS =================
 
     private void clearFields() {
 
@@ -473,9 +442,7 @@ public class EventForm extends JFrame implements ActionListener {
         eventTable.clearSelection();
     }
 
-    // =========================
-    // VALIDATION
-    // =========================
+    // ================= VALIDATION =================
 
     private boolean validateFields() {
 
@@ -504,13 +471,8 @@ public class EventForm extends JFrame implements ActionListener {
                     txtTotalTickets.getText().trim()
             );
 
-            Date.valueOf(
-                    txtEventDate.getText().trim()
-            );
-
-            Time.valueOf(
-                    txtEventTime.getText().trim()
-            );
+            Date.valueOf(txtEventDate.getText().trim());
+            Time.valueOf(txtEventTime.getText().trim());
 
             if (price < 0 || tickets < 0) {
 
@@ -535,9 +497,7 @@ public class EventForm extends JFrame implements ActionListener {
         return true;
     }
 
-    // =========================
-    // BUTTON ACTIONS
-    // =========================
+    // ================= BUTTON ACTIONS =================
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -564,14 +524,11 @@ public class EventForm extends JFrame implements ActionListener {
         }
     }
 
-    // =========================
-    // MAIN METHOD FOR TESTING
-    // =========================
+    // ================= MAIN =================
 
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> {
-
             EventForm form = new EventForm();
             form.setVisible(true);
         });

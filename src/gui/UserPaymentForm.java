@@ -53,24 +53,20 @@ public class UserPaymentForm extends JFrame {
         // =========================
 
         JLabel titleLabel =
-                new JLabel("MAKE PAYMENT");
+                new JLabel("MAKE PAYMENT", SwingConstants.CENTER);
 
         titleLabel.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        24
-                )
+                new Font("Arial", Font.BOLD, 24)
         );
 
-        titleLabel.setBounds(
-                150,
-                30,
-                250,
-                40
+        titleLabel.setForeground(
+                new Color(25, 55, 90)
         );
+
+        titleLabel.setBounds(125, 30, 250, 40);
 
         add(titleLabel);
+
 
         // =========================
         // USER ID
@@ -79,37 +75,22 @@ public class UserPaymentForm extends JFrame {
         JLabel userLabel =
                 new JLabel("User ID:");
 
-        userLabel.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        15
-                )
-        );
-
-        userLabel.setBounds(
-                70,
-                100,
-                120,
-                30
-        );
+        styleLabel(userLabel);
+        userLabel.setBounds(70, 100, 120, 30);
 
         add(userLabel);
 
-
         userIdLabel =
-                new JLabel(
-                        String.valueOf(userId)
-                );
+                new JLabel(String.valueOf(userId));
 
-        userIdLabel.setBounds(
-                220,
-                100,
-                200,
-                30
+        userIdLabel.setFont(
+                new Font("Arial", Font.PLAIN, 15)
         );
 
+        userIdLabel.setBounds(220, 100, 200, 30);
+
         add(userIdLabel);
+
 
         // =========================
         // BOOKING ID
@@ -118,37 +99,22 @@ public class UserPaymentForm extends JFrame {
         JLabel bookingLabel =
                 new JLabel("Booking ID:");
 
-        bookingLabel.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        15
-                )
-        );
-
-        bookingLabel.setBounds(
-                70,
-                140,
-                120,
-                30
-        );
+        styleLabel(bookingLabel);
+        bookingLabel.setBounds(70, 140, 120, 30);
 
         add(bookingLabel);
 
-
         bookingIdLabel =
-                new JLabel(
-                        String.valueOf(bookingId)
-                );
+                new JLabel(String.valueOf(bookingId));
 
-        bookingIdLabel.setBounds(
-                220,
-                140,
-                200,
-                30
+        bookingIdLabel.setFont(
+                new Font("Arial", Font.PLAIN, 15)
         );
 
+        bookingIdLabel.setBounds(220, 140, 200, 30);
+
         add(bookingIdLabel);
+
 
         // =========================
         // AMOUNT
@@ -157,48 +123,28 @@ public class UserPaymentForm extends JFrame {
         JLabel amountTextLabel =
                 new JLabel("Amount:");
 
-        amountTextLabel.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        15
-                )
-        );
-
-        amountTextLabel.setBounds(
-                70,
-                180,
-                120,
-                30
-        );
+        styleLabel(amountTextLabel);
+        amountTextLabel.setBounds(70, 180, 120, 30);
 
         add(amountTextLabel);
 
-
         amountLabel =
                 new JLabel(
-                        String.format(
-                                "₹%.2f",
-                                amount
-                        )
+                        String.format("₹%.2f", amount)
                 );
 
         amountLabel.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        16
-                )
+                new Font("Arial", Font.BOLD, 16)
         );
 
-        amountLabel.setBounds(
-                220,
-                180,
-                200,
-                30
+        amountLabel.setForeground(
+                new Color(55, 140, 100)
         );
+
+        amountLabel.setBounds(220, 180, 200, 30);
 
         add(amountLabel);
+
 
         // =========================
         // PAYMENT METHOD
@@ -207,23 +153,10 @@ public class UserPaymentForm extends JFrame {
         JLabel methodLabel =
                 new JLabel("Payment Method:");
 
-        methodLabel.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        15
-                )
-        );
-
-        methodLabel.setBounds(
-                70,
-                220,
-                140,
-                30
-        );
+        styleLabel(methodLabel);
+        methodLabel.setBounds(70, 220, 140, 30);
 
         add(methodLabel);
-
 
         paymentMethodCombo =
                 new JComboBox<>(
@@ -236,13 +169,11 @@ public class UserPaymentForm extends JFrame {
                 );
 
         paymentMethodCombo.setBounds(
-                220,
-                220,
-                200,
-                30
+                220, 220, 200, 30
         );
 
         add(paymentMethodCombo);
+
 
         // =========================
         // PAYMENT STATUS
@@ -251,20 +182,8 @@ public class UserPaymentForm extends JFrame {
         JLabel statusLabel =
                 new JLabel("Payment Status:");
 
-        statusLabel.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        15
-                )
-        );
-
-        statusLabel.setBounds(
-                70,
-                260,
-                140,
-                30
-        );
+        styleLabel(statusLabel);
+        statusLabel.setBounds(70, 260, 140, 30);
 
         add(statusLabel);
 
@@ -277,13 +196,11 @@ public class UserPaymentForm extends JFrame {
                 );
 
         paymentStatusCombo.setBounds(
-                220,
-                260,
-                200,
-                30
+                220, 260, 200, 30
         );
 
         add(paymentStatusCombo);
+
 
         // =========================
         // BUTTONS
@@ -293,25 +210,31 @@ public class UserPaymentForm extends JFrame {
                 new JButton("Pay Now");
 
         payButton.setBounds(
-                140,
-                310,
-                100,
-                35
+                140, 310, 100, 35
+        );
+
+        styleButton(
+                payButton,
+                new Color(55, 140, 100)
         );
 
         add(payButton);
+
 
         cancelButton =
                 new JButton("Cancel");
 
         cancelButton.setBounds(
-                260,
-                310,
-                100,
-                35
+                260, 310, 100, 35
+        );
+
+        styleButton(
+                cancelButton,
+                new Color(190, 70, 70)
         );
 
         add(cancelButton);
+
 
         // =========================
         // PAY BUTTON
@@ -321,6 +244,7 @@ public class UserPaymentForm extends JFrame {
                 e -> makePayment()
         );
 
+
         // =========================
         // CANCEL BUTTON
         // =========================
@@ -329,6 +253,44 @@ public class UserPaymentForm extends JFrame {
                 e -> dispose()
         );
     }
+
+
+    // =========================
+    // LABEL STYLE
+    // =========================
+
+    private void styleLabel(JLabel label) {
+
+        label.setFont(
+                new Font("Arial", Font.BOLD, 15)
+        );
+
+        label.setForeground(
+                new Color(70, 70, 70)
+        );
+    }
+
+
+    // =========================
+    // BUTTON STYLE
+    // =========================
+
+    private void styleButton(
+            JButton button,
+            Color color
+    ) {
+
+        button.setFont(
+                new Font("Arial", Font.BOLD, 14)
+        );
+
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+    }
+
 
     // =========================
     // MAKE PAYMENT
@@ -348,25 +310,29 @@ public class UserPaymentForm extends JFrame {
             return;
         }
 
+
         String paymentMethod =
                 paymentMethodCombo
                         .getSelectedItem()
                         .toString();
+
 
         String paymentStatus =
                 paymentStatusCombo
                         .getSelectedItem()
                         .toString();
 
+
         // Current date and time
         String paymentDate =
                 new SimpleDateFormat(
                         "yyyy-MM-dd HH:mm:ss"
-                ).format(
-                        new Date()
-                );
+                ).format(new Date());
+
+
         Payment payment =
                 new Payment();
+
 
         payment.setBookingId(
                 bookingId
@@ -387,9 +353,12 @@ public class UserPaymentForm extends JFrame {
         payment.setPaymentDate(
                 paymentDate
         );
+
+
         // =========================
         // SAVE PAYMENT
         // =========================
+
         boolean result =
                 paymentService.addPayment(
                         payment
@@ -426,6 +395,8 @@ public class UserPaymentForm extends JFrame {
             );
         }
     }
+
+
     // =========================
     // MAIN METHOD
     // =========================

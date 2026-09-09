@@ -5,40 +5,18 @@ import service.PaymentService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-
+import java.awt.event.*;
 import java.util.List;
 
 public class PaymentForm extends JFrame implements ActionListener {
 
-    private JTextField txtPaymentId;
-    private JTextField txtBookingId;
-    private JTextField txtAmount;
-    private JTextField txtPaymentDate;
-
-    private JComboBox<String> cmbPaymentMethod;
-    private JComboBox<String> cmbPaymentStatus;
-
-    private JButton btnAdd;
-    private JButton btnUpdate;
-    private JButton btnDelete;
-    private JButton btnClear;
-    private JButton btnRefresh;
-
+    private JTextField txtPaymentId, txtBookingId, txtAmount, txtPaymentDate;
+    private JComboBox<String> cmbPaymentMethod, cmbPaymentStatus;
+    private JButton btnAdd, btnUpdate, btnDelete, btnClear, btnRefresh;
     private JTable paymentTable;
     private DefaultTableModel tableModel;
-
     private PaymentService paymentService;
-
-
-    // =========================
-    // CONSTRUCTOR
-    // =========================
 
     public PaymentForm() {
 
@@ -47,240 +25,82 @@ public class PaymentForm extends JFrame implements ActionListener {
         setTitle("Payment Management");
         setSize(950, 600);
         setLocationRelativeTo(null);
-
-        setDefaultCloseOperation(
-                JFrame.DISPOSE_ON_CLOSE
-        );
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         createGUI();
-
         loadPayments();
-
         setVisible(true);
     }
 
-
-    // =========================
-    // CREATE GUI
-    // =========================
-
     private void createGUI() {
 
-        setLayout(
-                new BorderLayout(10, 10)
-        );
+        setLayout(new BorderLayout(10, 10));
 
-
-        // =========================
         // TITLE
-        // =========================
+        JLabel title = new JLabel("PAYMENT MANAGEMENT", JLabel.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 24));
+        title.setForeground(new Color(25, 55, 90));
+        add(title, BorderLayout.NORTH);
 
-        JLabel title =
-                new JLabel(
-                        "PAYMENT MANAGEMENT",
-                        JLabel.CENTER
-                );
+        // FORM
+        JPanel formPanel = new JPanel(new GridLayout(6, 2, 10, 10));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
-        title.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        24
-                )
-        );
-
-        add(
-                title,
-                BorderLayout.NORTH
-        );
-
-
-        // =========================
-        // FORM PANEL
-        // =========================
-
-        JPanel formPanel =
-                new JPanel(
-                        new GridLayout(
-                                6,
-                                2,
-                                10,
-                                10
-                        )
-                );
-
-        formPanel.setBorder(
-                BorderFactory.createEmptyBorder(
-                        15,
-                        20,
-                        15,
-                        20
-                )
-        );
-
-
-        // Payment ID
-
-        formPanel.add(
-                new JLabel("Payment ID:")
-        );
-
-        txtPaymentId =
-                new JTextField();
-
+        formPanel.add(label("Payment ID:"));
+        txtPaymentId = new JTextField();
         txtPaymentId.setEditable(false);
+        formPanel.add(txtPaymentId);
 
-        formPanel.add(
-                txtPaymentId
-        );
+        formPanel.add(label("Booking ID:"));
+        txtBookingId = new JTextField();
+        formPanel.add(txtBookingId);
 
-
-        // Booking ID
-
-        formPanel.add(
-                new JLabel("Booking ID:")
-        );
-
-        txtBookingId =
-                new JTextField();
-
-        formPanel.add(
-                txtBookingId
-        );
-
-
-        // =========================
-        // BOOKING ID AUTO AMOUNT
-        // =========================
-
-        txtBookingId.addActionListener(
-                e -> fetchBookingAmount()
-        );
-
-        txtBookingId.addFocusListener(
-                new FocusAdapter() {
-
-                    @Override
-                    public void focusLost(
-                            FocusEvent e
-                    ) {
-
-                        if (!txtBookingId
-                                .getText()
-                                .trim()
-                                .isEmpty()) {
-
-                            fetchBookingAmount();
-                        }
-                    }
-                }
-        );
-
-
-        // Amount
-
-        formPanel.add(
-                new JLabel("Amount:")
-        );
-
-        txtAmount =
-                new JTextField();
-
-        // IMPORTANT
-        // User cannot manually change amount
-
+        formPanel.add(label("Amount:"));
+        txtAmount = new JTextField();
         txtAmount.setEditable(false);
+        formPanel.add(txtAmount);
 
-        formPanel.add(
-                txtAmount
-        );
+        formPanel.add(label("Payment Method:"));
+        cmbPaymentMethod = new JComboBox<>(
+                new String[]{"UPI", "Card", "Cash", "Net Banking"});
+        formPanel.add(cmbPaymentMethod);
 
+        formPanel.add(label("Payment Status:"));
+        cmbPaymentStatus = new JComboBox<>(
+                new String[]{"Paid", "Pending", "Failed"});
+        formPanel.add(cmbPaymentStatus);
 
-        // Payment Method
+        formPanel.add(label("Payment Date:"));
+        txtPaymentDate = new JTextField();
+        formPanel.add(txtPaymentDate);
 
-        formPanel.add(
-                new JLabel("Payment Method:")
-        );
+        add(formPanel, BorderLayout.WEST);
 
-        cmbPaymentMethod =
-                new JComboBox<>(
-                        new String[]{
-                                "UPI",
-                                "Card",
-                                "Cash",
-                                "Net Banking"
-                        }
-                );
+        // AUTO AMOUNT
+        txtBookingId.addActionListener(e -> fetchBookingAmount());
 
-        formPanel.add(
-                cmbPaymentMethod
-        );
+        txtBookingId.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!txtBookingId.getText().trim().isEmpty())
+                    fetchBookingAmount();
+            }
+        });
 
+        // BUTTONS
+        JPanel buttonPanel = new JPanel(new FlowLayout());
 
-        // Payment Status
+        btnAdd = new JButton("Add Payment");
+        btnUpdate = new JButton("Update");
+        btnDelete = new JButton("Delete");
+        btnClear = new JButton("Clear");
+        btnRefresh = new JButton("Refresh");
 
-        formPanel.add(
-                new JLabel("Payment Status:")
-        );
-
-        cmbPaymentStatus =
-                new JComboBox<>(
-                        new String[]{
-                                "Paid",
-                                "Pending",
-                                "Failed"
-                        }
-                );
-
-        formPanel.add(
-                cmbPaymentStatus
-        );
-
-
-        // Payment Date
-
-        formPanel.add(
-                new JLabel("Payment Date:")
-        );
-
-        txtPaymentDate =
-                new JTextField();
-
-        formPanel.add(
-                txtPaymentDate
-        );
-
-
-        add(
-                formPanel,
-                BorderLayout.WEST
-        );
-
-
-        // =========================
-        // BUTTON PANEL
-        // =========================
-
-        JPanel buttonPanel =
-                new JPanel(
-                        new FlowLayout()
-                );
-
-        btnAdd =
-                new JButton("Add Payment");
-
-        btnUpdate =
-                new JButton("Update");
-
-        btnDelete =
-                new JButton("Delete");
-
-        btnClear =
-                new JButton("Clear");
-
-        btnRefresh =
-                new JButton("Refresh");
-
+        styleButton(btnAdd, new Color(45, 85, 130));
+        styleButton(btnUpdate, new Color(55, 140, 100));
+        styleButton(btnDelete, new Color(190, 70, 70));
+        styleButton(btnClear, new Color(120, 120, 120));
+        styleButton(btnRefresh, new Color(120, 80, 150));
 
         btnAdd.addActionListener(this);
         btnUpdate.addActionListener(this);
@@ -288,334 +108,154 @@ public class PaymentForm extends JFrame implements ActionListener {
         btnClear.addActionListener(this);
         btnRefresh.addActionListener(this);
 
-
         buttonPanel.add(btnAdd);
         buttonPanel.add(btnUpdate);
         buttonPanel.add(btnDelete);
         buttonPanel.add(btnClear);
         buttonPanel.add(btnRefresh);
 
-
-        // =========================
         // TABLE
-        // =========================
-
         String[] columns = {
-
-                "Payment ID",
-                "Booking ID",
-                "Amount",
-                "Payment Method",
-                "Payment Status",
-                "Payment Date"
+                "Payment ID", "Booking ID", "Amount",
+                "Payment Method", "Payment Status", "Payment Date"
         };
 
+        tableModel = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
-        tableModel =
-                new DefaultTableModel(
-                        columns,
-                        0
-                ) {
-
-                    @Override
-                    public boolean isCellEditable(
-                            int row,
-                            int column
-                    ) {
-
-                        return false;
-                    }
-                };
-
-
-        paymentTable =
-                new JTable(
-                        tableModel
-                );
-
-
+        paymentTable = new JTable(tableModel);
         paymentTable.setSelectionMode(
-                ListSelectionModel.SINGLE_SELECTION
-        );
+                ListSelectionModel.SINGLE_SELECTION);
 
+        paymentTable.getTableHeader().setBackground(
+                new Color(45, 85, 130));
+        paymentTable.getTableHeader().setForeground(Color.WHITE);
+        paymentTable.getTableHeader().setFont(
+                new Font("Arial", Font.BOLD, 13));
 
-        // =========================
-        // TABLE ROW CLICK
-        // =========================
+        paymentTable.getSelectionModel().addListSelectionListener(e -> {
 
-        paymentTable
-                .getSelectionModel()
-                .addListSelectionListener(
-                        e -> {
+            if (!e.getValueIsAdjusting()) {
 
-                            if (!e.getValueIsAdjusting()) {
+                int row = paymentTable.getSelectedRow();
 
-                                int row =
-                                        paymentTable
-                                                .getSelectedRow();
+                if (row != -1) {
+                    txtPaymentId.setText(
+                            tableModel.getValueAt(row, 0).toString());
+                    txtBookingId.setText(
+                            tableModel.getValueAt(row, 1).toString());
+                    txtAmount.setText(
+                            tableModel.getValueAt(row, 2).toString());
 
-                                if (row != -1) {
+                    cmbPaymentMethod.setSelectedItem(
+                            tableModel.getValueAt(row, 3).toString());
 
-                                    txtPaymentId.setText(
-                                            tableModel
-                                                    .getValueAt(
-                                                            row,
-                                                            0
-                                                    )
-                                                    .toString()
-                                    );
+                    cmbPaymentStatus.setSelectedItem(
+                            tableModel.getValueAt(row, 4).toString());
 
+                    txtPaymentDate.setText(
+                            tableModel.getValueAt(row, 5).toString());
+                }
+            }
+        });
 
-                                    txtBookingId.setText(
-                                            tableModel
-                                                    .getValueAt(
-                                                            row,
-                                                            1
-                                                    )
-                                                    .toString()
-                                    );
+        JScrollPane scrollPane = new JScrollPane(paymentTable);
 
+        JPanel centerPanel = new JPanel(
+                new BorderLayout(10, 10));
 
-                                    txtAmount.setText(
-                                            tableModel
-                                                    .getValueAt(
-                                                            row,
-                                                            2
-                                                    )
-                                                    .toString()
-                                    );
+        centerPanel.add(buttonPanel, BorderLayout.NORTH);
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
 
-
-                                    cmbPaymentMethod
-                                            .setSelectedItem(
-                                                    tableModel
-                                                            .getValueAt(
-                                                                    row,
-                                                                    3
-                                                            )
-                                                            .toString()
-                                            );
-
-
-                                    cmbPaymentStatus
-                                            .setSelectedItem(
-                                                    tableModel
-                                                            .getValueAt(
-                                                                    row,
-                                                                    4
-                                                            )
-                                                            .toString()
-                                            );
-
-
-                                    txtPaymentDate.setText(
-                                            tableModel
-                                                    .getValueAt(
-                                                            row,
-                                                            5
-                                                    )
-                                                    .toString()
-                                    );
-                                }
-                            }
-                        }
-                );
-
-
-        JScrollPane scrollPane =
-                new JScrollPane(
-                        paymentTable
-                );
-
-
-        // =========================
-        // CENTER PANEL
-        // =========================
-
-        JPanel centerPanel =
-                new JPanel(
-                        new BorderLayout(
-                                10,
-                                10
-                        )
-                );
-
-
-        centerPanel.add(
-                buttonPanel,
-                BorderLayout.NORTH
-        );
-
-
-        centerPanel.add(
-                scrollPane,
-                BorderLayout.CENTER
-        );
-
-
-        add(
-                centerPanel,
-                BorderLayout.CENTER
-        );
+        add(centerPanel, BorderLayout.CENTER);
     }
 
+    // LABEL STYLE
+    private JLabel label(String text) {
+        JLabel l = new JLabel(text);
+        l.setFont(new Font("Arial", Font.BOLD, 13));
+        l.setForeground(new Color(70, 70, 70));
+        return l;
+    }
 
-    // =========================
+    // BUTTON STYLE
+    private void styleButton(JButton button, Color color) {
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+    }
+
     // FETCH BOOKING AMOUNT
-    // =========================
-
     private void fetchBookingAmount() {
 
-        String bookingText =
-                txtBookingId
-                        .getText()
-                        .trim();
+        String text = txtBookingId.getText().trim();
 
-
-        if (bookingText.isEmpty()) {
-
+        if (text.isEmpty()) {
             txtAmount.setText("");
-
             return;
         }
 
-
         try {
 
-            int bookingId =
-                    Integer.parseInt(
-                            bookingText
-                    );
-
+            int bookingId = Integer.parseInt(text);
 
             if (bookingId <= 0) {
-
                 txtAmount.setText("");
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Booking ID must be positive.",
-                        "Invalid Booking ID",
-                        JOptionPane.ERROR_MESSAGE
-                );
-
+                showError("Booking ID must be positive.",
+                        "Invalid Booking ID");
                 return;
             }
 
-
             double amount =
-                    paymentService
-                            .getBookingAmount(
-                                    bookingId
-                            );
-
+                    paymentService.getBookingAmount(bookingId);
 
             if (amount == -1) {
-
                 txtAmount.setText("");
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Booking ID not found.",
-                        "Invalid Booking ID",
-                        JOptionPane.ERROR_MESSAGE
-                );
-
+                showError("Booking ID not found.",
+                        "Invalid Booking ID");
             } else {
-
-                txtAmount.setText(
-                        String.format(
-                                "%.2f",
-                                amount
-                        )
-                );
+                txtAmount.setText(String.format("%.2f", amount));
             }
 
-
-        } catch (
-                NumberFormatException e
-        ) {
+        } catch (NumberFormatException e) {
 
             txtAmount.setText("");
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Booking ID must be a valid number.",
-                    "Invalid Booking ID",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            showError("Booking ID must be a valid number.",
+                    "Invalid Booking ID");
         }
     }
 
-
-    // =========================
     // ADD PAYMENT
-    // =========================
-
     private void addPayment() {
 
-        // Fetch amount automatically
-        if (!fetchAndValidateBooking()) {
+        if (!fetchAndValidateBooking() || !validateFields())
             return;
-        }
-
-
-        if (!validateFields()) {
-            return;
-        }
-
 
         try {
 
-            Payment payment =
-                    new Payment();
-
+            Payment payment = new Payment();
 
             payment.setBookingId(
-                    Integer.parseInt(
-                            txtBookingId
-                                    .getText()
-                                    .trim()
-                    )
-            );
-
+                    Integer.parseInt(txtBookingId.getText().trim()));
 
             payment.setAmount(
-                    Double.parseDouble(
-                            txtAmount
-                                    .getText()
-                                    .trim()
-                    )
-            );
-
+                    Double.parseDouble(txtAmount.getText().trim()));
 
             payment.setPaymentMethod(
-                    cmbPaymentMethod
-                            .getSelectedItem()
-                            .toString()
-            );
-
+                    cmbPaymentMethod.getSelectedItem().toString());
 
             payment.setPaymentStatus(
-                    cmbPaymentStatus
-                            .getSelectedItem()
-                            .toString()
-            );
-
+                    cmbPaymentStatus.getSelectedItem().toString());
 
             payment.setPaymentDate(
-                    txtPaymentDate
-                            .getText()
-                            .trim()
-            );
+                    txtPaymentDate.getText().trim());
 
-
-            boolean result =
-                    paymentService
-                            .addPayment(
-                                    payment
-                            );
-
+            boolean result = paymentService.addPayment(payment);
 
             if (result) {
 
@@ -623,229 +263,99 @@ public class PaymentForm extends JFrame implements ActionListener {
                         this,
                         "Payment added successfully!",
                         "Success",
-                        JOptionPane.INFORMATION_MESSAGE
-                );
-
+                        JOptionPane.INFORMATION_MESSAGE);
 
                 clearFields();
-
                 loadPayments();
 
-
             } else {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Failed to add payment.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
+                showError("Failed to add payment.", "Error");
             }
 
-
-        } catch (
-                NumberFormatException e
-        ) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Invalid Booking ID.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+        } catch (NumberFormatException e) {
+            showError("Invalid Booking ID.", "Error");
         }
     }
 
-
-    // =========================
     // FETCH + VALIDATE BOOKING
-    // =========================
-
     private boolean fetchAndValidateBooking() {
 
-        String bookingText =
-                txtBookingId
-                        .getText()
-                        .trim();
+        String text = txtBookingId.getText().trim();
 
-
-        if (bookingText.isEmpty()) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Please enter Booking ID.",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-
+        if (text.isEmpty()) {
+            showError("Please enter Booking ID.",
+                    "Validation Error");
             return false;
         }
 
-
         try {
 
-            int bookingId =
-                    Integer.parseInt(
-                            bookingText
-                    );
-
+            int bookingId = Integer.parseInt(text);
 
             if (bookingId <= 0) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Booking ID must be positive.",
-                        "Validation Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
-
+                showError("Booking ID must be positive.",
+                        "Validation Error");
                 return false;
             }
 
-
             double amount =
-                    paymentService
-                            .getBookingAmount(
-                                    bookingId
-                            );
-
+                    paymentService.getBookingAmount(bookingId);
 
             if (amount == -1) {
 
                 txtAmount.setText("");
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Booking ID does not exist.",
-                        "Validation Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
-
+                showError("Booking ID does not exist.",
+                        "Validation Error");
                 return false;
             }
 
-
-            // Automatically set amount
-
-            txtAmount.setText(
-                    String.format(
-                            "%.2f",
-                            amount
-                    )
-            );
-
-
+            txtAmount.setText(String.format("%.2f", amount));
             return true;
 
+        } catch (NumberFormatException e) {
 
-        } catch (
-                NumberFormatException e
-        ) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Booking ID must be a valid number.",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-
+            showError("Booking ID must be a valid number.",
+                    "Validation Error");
             return false;
         }
     }
 
-
-    // =========================
     // UPDATE PAYMENT
-    // =========================
-
     private void updatePayment() {
 
-        if (txtPaymentId
-                .getText()
-                .trim()
-                .isEmpty()) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Please select a payment to update.",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-
+        if (txtPaymentId.getText().trim().isEmpty()) {
+            showError("Please select a payment to update.",
+                    "Validation Error");
             return;
         }
 
-
-        if (!fetchAndValidateBooking()) {
+        if (!fetchAndValidateBooking() || !validateFields())
             return;
-        }
-
-
-        if (!validateFields()) {
-            return;
-        }
-
 
         try {
 
-            Payment payment =
-                    new Payment();
-
+            Payment payment = new Payment();
 
             payment.setPaymentId(
-                    Integer.parseInt(
-                            txtPaymentId
-                                    .getText()
-                                    .trim()
-                    )
-            );
-
+                    Integer.parseInt(txtPaymentId.getText().trim()));
 
             payment.setBookingId(
-                    Integer.parseInt(
-                            txtBookingId
-                                    .getText()
-                                    .trim()
-                    )
-            );
-
+                    Integer.parseInt(txtBookingId.getText().trim()));
 
             payment.setAmount(
-                    Double.parseDouble(
-                            txtAmount
-                                    .getText()
-                                    .trim()
-                    )
-            );
-
+                    Double.parseDouble(txtAmount.getText().trim()));
 
             payment.setPaymentMethod(
-                    cmbPaymentMethod
-                            .getSelectedItem()
-                            .toString()
-            );
-
+                    cmbPaymentMethod.getSelectedItem().toString());
 
             payment.setPaymentStatus(
-                    cmbPaymentStatus
-                            .getSelectedItem()
-                            .toString()
-            );
-
+                    cmbPaymentStatus.getSelectedItem().toString());
 
             payment.setPaymentDate(
-                    txtPaymentDate
-                            .getText()
-                            .trim()
-            );
-
+                    txtPaymentDate.getText().trim());
 
             boolean result =
-                    paymentService
-                            .updatePayment(
-                                    payment
-                            );
-
+                    paymentService.updatePayment(payment);
 
             if (result) {
 
@@ -853,90 +363,45 @@ public class PaymentForm extends JFrame implements ActionListener {
                         this,
                         "Payment updated successfully!",
                         "Success",
-                        JOptionPane.INFORMATION_MESSAGE
-                );
-
+                        JOptionPane.INFORMATION_MESSAGE);
 
                 clearFields();
-
                 loadPayments();
 
-
             } else {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Failed to update payment.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
+                showError("Failed to update payment.", "Error");
             }
 
-
-        } catch (
-                NumberFormatException e
-        ) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Please enter valid values.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+        } catch (NumberFormatException e) {
+            showError("Please enter valid values.", "Error");
         }
     }
 
-
-    // =========================
     // DELETE PAYMENT
-    // =========================
-
     private void deletePayment() {
 
-        if (txtPaymentId
-                .getText()
-                .trim()
-                .isEmpty()) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Please select a payment to delete.",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-
+        if (txtPaymentId.getText().trim().isEmpty()) {
+            showError("Please select a payment to delete.",
+                    "Validation Error");
             return;
         }
 
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete this payment?",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION);
 
-        int choice =
-                JOptionPane.showConfirmDialog(
-                        this,
-                        "Are you sure you want to delete this payment?",
-                        "Confirm Delete",
-                        JOptionPane.YES_NO_OPTION
-                );
-
-
-        if (choice ==
-                JOptionPane.YES_OPTION) {
+        if (choice == JOptionPane.YES_OPTION) {
 
             try {
 
                 int paymentId =
                         Integer.parseInt(
-                                txtPaymentId
-                                        .getText()
-                                        .trim()
-                        );
-
+                                txtPaymentId.getText().trim());
 
                 boolean result =
-                        paymentService
-                                .deletePayment(
-                                        paymentId
-                                );
-
+                        paymentService.deletePayment(paymentId);
 
                 if (result) {
 
@@ -944,247 +409,132 @@ public class PaymentForm extends JFrame implements ActionListener {
                             this,
                             "Payment deleted successfully!",
                             "Success",
-                            JOptionPane.INFORMATION_MESSAGE
-                    );
-
+                            JOptionPane.INFORMATION_MESSAGE);
 
                     clearFields();
-
                     loadPayments();
 
-
                 } else {
-
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "Failed to delete payment.",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
+                    showError("Failed to delete payment.", "Error");
                 }
 
-
-            } catch (
-                    NumberFormatException e
-            ) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Invalid Payment ID.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
+            } catch (NumberFormatException e) {
+                showError("Invalid Payment ID.", "Error");
             }
         }
     }
 
-
-    // =========================
     // LOAD PAYMENTS
-    // =========================
-
     private void loadPayments() {
 
         tableModel.setRowCount(0);
 
-
         List<Payment> payments =
-                paymentService
-                        .getAllPayments();
-
+                paymentService.getAllPayments();
 
         for (Payment payment : payments) {
 
-            Object[] row = {
-
+            tableModel.addRow(new Object[]{
                     payment.getPaymentId(),
-
                     payment.getBookingId(),
-
                     payment.getAmount(),
-
                     payment.getPaymentMethod(),
-
                     payment.getPaymentStatus(),
-
                     payment.getPaymentDate()
-            };
-
-
-            tableModel.addRow(row);
+            });
         }
     }
 
-
-    // =========================
     // CLEAR FIELDS
-    // =========================
-
     private void clearFields() {
 
         txtPaymentId.setText("");
-
         txtBookingId.setText("");
-
         txtAmount.setText("");
-
         txtPaymentDate.setText("");
 
-
-        cmbPaymentMethod
-                .setSelectedIndex(0);
-
-        cmbPaymentStatus
-                .setSelectedIndex(0);
-
+        cmbPaymentMethod.setSelectedIndex(0);
+        cmbPaymentStatus.setSelectedIndex(0);
 
         paymentTable.clearSelection();
     }
 
-
-    // =========================
     // VALIDATION
-    // =========================
-
     private boolean validateFields() {
 
-        if (txtBookingId
-                .getText()
-                .trim()
-                .isEmpty()
-                || txtAmount
-                .getText()
-                .trim()
-                .isEmpty()
-                || txtPaymentDate
-                .getText()
-                .trim()
-                .isEmpty()) {
+        if (txtBookingId.getText().trim().isEmpty()
+                || txtAmount.getText().trim().isEmpty()
+                || txtPaymentDate.getText().trim().isEmpty()) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Please fill all required fields.",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-
+            showError("Please fill all required fields.",
+                    "Validation Error");
             return false;
         }
-
 
         try {
 
             int bookingId =
                     Integer.parseInt(
-                            txtBookingId
-                                    .getText()
-                                    .trim()
-                    );
-
+                            txtBookingId.getText().trim());
 
             double amount =
                     Double.parseDouble(
-                            txtAmount
-                                    .getText()
-                                    .trim()
-                    );
-
+                            txtAmount.getText().trim());
 
             if (bookingId <= 0) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Booking ID must be positive.",
-                        "Validation Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
-
+                showError("Booking ID must be positive.",
+                        "Validation Error");
                 return false;
             }
-
 
             if (amount < 0) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Amount cannot be negative.",
-                        "Validation Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
-
+                showError("Amount cannot be negative.",
+                        "Validation Error");
                 return false;
             }
 
+        } catch (NumberFormatException e) {
 
-        } catch (
-                NumberFormatException e
-        ) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Invalid Booking ID.",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-
+            showError("Invalid Booking ID.",
+                    "Validation Error");
             return false;
         }
-
 
         return true;
     }
 
-
-    // =========================
     // BUTTON ACTIONS
-    // =========================
-
     @Override
-    public void actionPerformed(
-            ActionEvent e
-    ) {
+    public void actionPerformed(ActionEvent e) {
 
-        if (e.getSource() == btnAdd) {
-
+        if (e.getSource() == btnAdd)
             addPayment();
 
-        } else if (
-                e.getSource() == btnUpdate
-        ) {
-
+        else if (e.getSource() == btnUpdate)
             updatePayment();
 
-        } else if (
-                e.getSource() == btnDelete
-        ) {
-
+        else if (e.getSource() == btnDelete)
             deletePayment();
 
-        } else if (
-                e.getSource() == btnClear
-        ) {
-
+        else if (e.getSource() == btnClear)
             clearFields();
 
-        } else if (
-                e.getSource() == btnRefresh
-        ) {
-
+        else if (e.getSource() == btnRefresh)
             loadPayments();
-        }
     }
 
+    // ERROR MESSAGE
+    private void showError(String message, String title) {
 
-    // =========================
-    // MAIN METHOD
-    // =========================
+        JOptionPane.showMessageDialog(
+                this,
+                message,
+                title,
+                JOptionPane.ERROR_MESSAGE);
+    }
 
-    public static void main(
-            String[] args
-    ) {
-
-        SwingUtilities.invokeLater(
-                () -> new PaymentForm()
-        );
+    // MAIN
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new PaymentForm());
     }
 }

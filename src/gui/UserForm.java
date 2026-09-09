@@ -21,7 +21,6 @@ public class UserForm extends JFrame implements ActionListener {
 
     public UserForm() {
 
-        // Frame Settings
         setTitle("User Management");
         setSize(600, 500);
         setLayout(null);
@@ -32,19 +31,33 @@ public class UserForm extends JFrame implements ActionListener {
 
         // ================= TITLE =================
 
-        titleLabel = new JLabel("USER MANAGEMENT");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
-        titleLabel.setBounds(180, 30, 300, 30);
+        titleLabel = new JLabel(
+                "USER MANAGEMENT",
+                SwingConstants.CENTER
+        );
+
+        titleLabel.setFont(
+                new Font("Arial", Font.BOLD, 24)
+        );
+
+        titleLabel.setForeground(
+                new Color(25, 55, 90)
+        );
+
+        titleLabel.setBounds(150, 30, 300, 35);
+
         add(titleLabel);
 
 
         // ================= USER ID =================
 
         idLabel = new JLabel("User ID:");
+        idLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        idLabel.setForeground(new Color(70, 70, 70));
         idLabel.setBounds(80, 90, 100, 25);
 
         idField = new JTextField();
-        idField.setBounds(180, 90, 200, 25);
+        idField.setBounds(180, 90, 250, 28);
 
         add(idLabel);
         add(idField);
@@ -53,10 +66,12 @@ public class UserForm extends JFrame implements ActionListener {
         // ================= NAME =================
 
         nameLabel = new JLabel("Name:");
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        nameLabel.setForeground(new Color(70, 70, 70));
         nameLabel.setBounds(80, 130, 100, 25);
 
         nameField = new JTextField();
-        nameField.setBounds(180, 130, 200, 25);
+        nameField.setBounds(180, 130, 250, 28);
 
         add(nameLabel);
         add(nameField);
@@ -65,10 +80,12 @@ public class UserForm extends JFrame implements ActionListener {
         // ================= EMAIL =================
 
         emailLabel = new JLabel("Email:");
+        emailLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        emailLabel.setForeground(new Color(70, 70, 70));
         emailLabel.setBounds(80, 170, 100, 25);
 
         emailField = new JTextField();
-        emailField.setBounds(180, 170, 200, 25);
+        emailField.setBounds(180, 170, 250, 28);
 
         add(emailLabel);
         add(emailField);
@@ -77,10 +94,12 @@ public class UserForm extends JFrame implements ActionListener {
         // ================= PHONE =================
 
         phoneLabel = new JLabel("Phone:");
+        phoneLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        phoneLabel.setForeground(new Color(70, 70, 70));
         phoneLabel.setBounds(80, 210, 100, 25);
 
         phoneField = new JTextField();
-        phoneField.setBounds(180, 210, 200, 25);
+        phoneField.setBounds(180, 210, 250, 28);
 
         add(phoneLabel);
         add(phoneField);
@@ -89,10 +108,12 @@ public class UserForm extends JFrame implements ActionListener {
         // ================= PASSWORD =================
 
         passwordLabel = new JLabel("Password:");
+        passwordLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        passwordLabel.setForeground(new Color(70, 70, 70));
         passwordLabel.setBounds(80, 250, 100, 25);
 
         passwordField = new JPasswordField();
-        passwordField.setBounds(180, 250, 200, 25);
+        passwordField.setBounds(180, 250, 250, 28);
 
         add(passwordLabel);
         add(passwordField);
@@ -101,16 +122,23 @@ public class UserForm extends JFrame implements ActionListener {
         // ================= BUTTONS =================
 
         addButton = new JButton("Add");
-        addButton.setBounds(100, 310, 100, 35);
+        addButton.setBounds(70, 320, 100, 38);
 
         updateButton = new JButton("Update");
-        updateButton.setBounds(210, 310, 100, 35);
+        updateButton.setBounds(180, 320, 100, 38);
 
         deleteButton = new JButton("Delete");
-        deleteButton.setBounds(320, 310, 100, 35);
+        deleteButton.setBounds(290, 320, 100, 38);
 
         viewButton = new JButton("View Users");
-        viewButton.setBounds(210, 360, 130, 35);
+        viewButton.setBounds(400, 320, 110, 38);
+
+
+        styleButton(addButton, new Color(45, 85, 130));
+        styleButton(updateButton, new Color(55, 140, 100));
+        styleButton(deleteButton, new Color(190, 70, 70));
+        styleButton(viewButton, new Color(120, 80, 150));
+
 
         addButton.addActionListener(this);
         updateButton.addActionListener(this);
@@ -126,6 +154,22 @@ public class UserForm extends JFrame implements ActionListener {
     }
 
 
+    // ================= BUTTON STYLE =================
+
+    private void styleButton(JButton button, Color color) {
+
+        button.setFont(
+                new Font("Arial", Font.BOLD, 13)
+        );
+
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+    }
+
+
     // ================= VALIDATION =================
 
     private boolean validateUserDetails() {
@@ -133,23 +177,28 @@ public class UserForm extends JFrame implements ActionListener {
         String name = nameField.getText().trim();
         String email = emailField.getText().trim();
         String phone = phoneField.getText().trim();
-        String password = new String(passwordField.getPassword());
+        String password =
+                new String(passwordField.getPassword());
 
 
         // NAME
 
         if (name.isEmpty()) {
 
-            JOptionPane.showMessageDialog(this,
-                    "Name cannot be empty!");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Name cannot be empty!"
+            );
 
             return false;
         }
 
         if (!name.matches("[a-zA-Z ]+")) {
 
-            JOptionPane.showMessageDialog(this,
-                    "Name should contain only letters!");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Name should contain only letters!"
+            );
 
             return false;
         }
@@ -159,8 +208,10 @@ public class UserForm extends JFrame implements ActionListener {
 
         if (email.isEmpty()) {
 
-            JOptionPane.showMessageDialog(this,
-                    "Email cannot be empty!");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Email cannot be empty!"
+            );
 
             return false;
         }
@@ -168,8 +219,10 @@ public class UserForm extends JFrame implements ActionListener {
         if (!email.matches(
                 "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
 
-            JOptionPane.showMessageDialog(this,
-                    "Please enter a valid email!");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please enter a valid email!"
+            );
 
             return false;
         }
@@ -179,8 +232,10 @@ public class UserForm extends JFrame implements ActionListener {
 
         if (!phone.matches("\\d{10}")) {
 
-            JOptionPane.showMessageDialog(this,
-                    "Phone number must contain exactly 10 digits!");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Phone number must contain exactly 10 digits!"
+            );
 
             return false;
         }
@@ -190,8 +245,10 @@ public class UserForm extends JFrame implements ActionListener {
 
         if (password.length() < 5) {
 
-            JOptionPane.showMessageDialog(this,
-                    "Password must contain at least 5 characters!");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Password must contain at least 5 characters!"
+            );
 
             return false;
         }
@@ -218,23 +275,29 @@ public class UserForm extends JFrame implements ActionListener {
                 String name = nameField.getText().trim();
                 String email = emailField.getText().trim();
                 String phone = phoneField.getText().trim();
+
                 String password =
                         new String(passwordField.getPassword());
 
                 User user =
                         new User(name, email, phone, password);
 
-                boolean success = service.addUser(user);
+                boolean success =
+                        service.addUser(user);
 
                 if (success) {
 
-                    JOptionPane.showMessageDialog(this,
-                            "User Added Successfully!");
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "User Added Successfully!"
+                    );
 
                 } else {
 
-                    JOptionPane.showMessageDialog(this,
-                            "User could not be added!");
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "User could not be added!"
+                    );
                 }
             }
 
@@ -252,12 +315,15 @@ public class UserForm extends JFrame implements ActionListener {
                 try {
 
                     id = Integer.parseInt(
-                            idField.getText().trim());
+                            idField.getText().trim()
+                    );
 
                 } catch (NumberFormatException ex) {
 
-                    JOptionPane.showMessageDialog(this,
-                            "Please enter a valid User ID!");
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Please enter a valid User ID!"
+                    );
 
                     return;
                 }
@@ -265,8 +331,10 @@ public class UserForm extends JFrame implements ActionListener {
 
                 if (id <= 0) {
 
-                    JOptionPane.showMessageDialog(this,
-                            "User ID must be greater than 0!");
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "User ID must be greater than 0!"
+                    );
 
                     return;
                 }
@@ -286,12 +354,16 @@ public class UserForm extends JFrame implements ActionListener {
 
 
                 User user =
-                        new User(name, email, phone, password);
+                        new User(
+                                name,
+                                email,
+                                phone,
+                                password
+                        );
 
                 user.setUserId(id);
 
 
-                // Password used for verification
                 String oldPassword =
                         JOptionPane.showInputDialog(
                                 this,
@@ -302,26 +374,36 @@ public class UserForm extends JFrame implements ActionListener {
                 if (oldPassword == null ||
                         oldPassword.isEmpty()) {
 
-                    JOptionPane.showMessageDialog(this,
-                            "Password is required!");
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Password is required!"
+                    );
 
                     return;
                 }
 
 
                 boolean success =
-                        service.updateUser(user, oldPassword);
+                        service.updateUser(
+                                user,
+                                oldPassword
+                        );
 
 
                 if (success) {
 
-                    JOptionPane.showMessageDialog(this,
-                            "User Updated Successfully!");
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "User Updated Successfully!"
+                    );
 
                 } else {
 
-                    JOptionPane.showMessageDialog(this,
-                            "Invalid User ID or Password!\nUser was not updated.");
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Invalid User ID or Password!\n" +
+                            "User was not updated."
+                    );
                 }
             }
 
@@ -335,12 +417,15 @@ public class UserForm extends JFrame implements ActionListener {
                 try {
 
                     id = Integer.parseInt(
-                            idField.getText().trim());
+                            idField.getText().trim()
+                    );
 
                 } catch (NumberFormatException ex) {
 
-                    JOptionPane.showMessageDialog(this,
-                            "Please enter a valid User ID!");
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Please enter a valid User ID!"
+                    );
 
                     return;
                 }
@@ -348,8 +433,10 @@ public class UserForm extends JFrame implements ActionListener {
 
                 if (id <= 0) {
 
-                    JOptionPane.showMessageDialog(this,
-                            "User ID must be greater than 0!");
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "User ID must be greater than 0!"
+                    );
 
                     return;
                 }
@@ -365,26 +452,36 @@ public class UserForm extends JFrame implements ActionListener {
                 if (password == null ||
                         password.isEmpty()) {
 
-                    JOptionPane.showMessageDialog(this,
-                            "Password is required!");
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Password is required!"
+                    );
 
                     return;
                 }
 
 
                 boolean success =
-                        service.deleteUser(id, password);
+                        service.deleteUser(
+                                id,
+                                password
+                        );
 
 
                 if (success) {
 
-                    JOptionPane.showMessageDialog(this,
-                            "User Deleted Successfully!");
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "User Deleted Successfully!"
+                    );
 
                 } else {
 
-                    JOptionPane.showMessageDialog(this,
-                            "Invalid User ID or Password!\nUser was not deleted.");
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Invalid User ID or Password!\n" +
+                            "User was not deleted."
+                    );
                 }
             }
 
@@ -395,8 +492,10 @@ public class UserForm extends JFrame implements ActionListener {
 
                 service.viewUsers();
 
-                JOptionPane.showMessageDialog(this,
-                        "Users displayed in Output/Terminal!");
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Users displayed in Output/Terminal!"
+                );
             }
 
 
@@ -408,13 +507,19 @@ public class UserForm extends JFrame implements ActionListener {
             phoneField.setText("");
             passwordField.setText("");
 
+
         } catch (Exception ex) {
 
-            JOptionPane.showMessageDialog(this,
-                    "Something went wrong: " + ex.getMessage());
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Something went wrong: " +
+                    ex.getMessage()
+            );
         }
     }
 
+
+    // ================= MAIN =================
 
     public static void main(String[] args) {
 

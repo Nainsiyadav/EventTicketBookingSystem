@@ -19,7 +19,6 @@ public class AdminLogin extends JFrame implements ActionListener {
 
     public AdminLogin() {
 
-        // Frame Settings
         setTitle("Admin Login");
         setSize(500, 400);
         setLayout(null);
@@ -28,39 +27,53 @@ public class AdminLogin extends JFrame implements ActionListener {
 
         service = new AdminService();
 
-        // Title
+        // ================= TITLE =================
         titleLabel = new JLabel("ADMIN LOGIN");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setBounds(160, 40, 250, 35);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
+        titleLabel.setForeground(new Color(25, 55, 90));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        titleLabel.setBounds(100, 40, 300, 40);
         add(titleLabel);
 
-        // Email
+        // ================= EMAIL =================
         emailLabel = new JLabel("Email:");
+        emailLabel.setFont(new Font("Arial", Font.BOLD, 15));
+        emailLabel.setForeground(new Color(45, 55, 70));
         emailLabel.setBounds(80, 120, 100, 25);
+        add(emailLabel);
 
         emailField = new JTextField();
         emailField.setBounds(180, 120, 220, 30);
-
-        add(emailLabel);
         add(emailField);
 
-        // Password
+        // ================= PASSWORD =================
         passwordLabel = new JLabel("Password:");
+        passwordLabel.setFont(new Font("Arial", Font.BOLD, 15));
+        passwordLabel.setForeground(new Color(45, 55, 70));
         passwordLabel.setBounds(80, 170, 100, 25);
+        add(passwordLabel);
 
         passwordField = new JPasswordField();
         passwordField.setBounds(180, 170, 220, 30);
-
-        add(passwordLabel);
         add(passwordField);
 
-        // Login Button
+        // ================= LOGIN BUTTON =================
         loginButton = new JButton("Login");
         loginButton.setBounds(130, 240, 100, 35);
+        loginButton.setFont(new Font("Arial", Font.BOLD, 14));
+        loginButton.setBackground(new Color(45, 85, 130));
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFocusPainted(false);
+        loginButton.setBorderPainted(false);
 
-        // Clear Button
+        // ================= CLEAR BUTTON =================
         clearButton = new JButton("Clear");
         clearButton.setBounds(250, 240, 100, 35);
+        clearButton.setFont(new Font("Arial", Font.BOLD, 14));
+        clearButton.setBackground(new Color(190, 70, 70));
+        clearButton.setForeground(Color.WHITE);
+        clearButton.setFocusPainted(false);
+        clearButton.setBorderPainted(false);
 
         loginButton.addActionListener(this);
         clearButton.addActionListener(this);
@@ -82,7 +95,6 @@ public class AdminLogin extends JFrame implements ActionListener {
             String password =
                     new String(passwordField.getPassword());
 
-            // Empty field validation
             if (email.isEmpty() || password.isEmpty()) {
 
                 JOptionPane.showMessageDialog(
@@ -95,7 +107,6 @@ public class AdminLogin extends JFrame implements ActionListener {
                 return;
             }
 
-            // Email basic validation
             if (!email.contains("@") || !email.contains(".")) {
 
                 JOptionPane.showMessageDialog(
@@ -108,7 +119,6 @@ public class AdminLogin extends JFrame implements ActionListener {
                 return;
             }
 
-            // Check login
             boolean result = service.login(email, password);
 
             if (result) {
@@ -120,10 +130,8 @@ public class AdminLogin extends JFrame implements ActionListener {
                         JOptionPane.INFORMATION_MESSAGE
                 );
 
-                // Open Dashboard
                 new Dashboard();
 
-                // Close Login Window
                 dispose();
 
             } else {

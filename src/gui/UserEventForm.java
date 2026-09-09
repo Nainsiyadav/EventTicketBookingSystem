@@ -15,9 +15,9 @@ public class UserEventForm extends JFrame {
     private DefaultTableModel tableModel;
     private int userId;
 
-    public UserEventForm(int userId){
-        this.userId = userId;
+    public UserEventForm(int userId) {
 
+        this.userId = userId;
         eventService = new EventService();
 
         setTitle("Available Events");
@@ -45,6 +45,10 @@ public class UserEventForm extends JFrame {
 
         title.setFont(
                 new Font("Arial", Font.BOLD, 26)
+        );
+
+        title.setForeground(
+                new Color(25, 55, 90)
         );
 
         add(title, BorderLayout.NORTH);
@@ -82,6 +86,18 @@ public class UserEventForm extends JFrame {
 
         eventTable.setRowHeight(25);
 
+        eventTable.getTableHeader().setBackground(
+                new Color(45, 85, 130)
+        );
+
+        eventTable.getTableHeader().setForeground(
+                Color.WHITE
+        );
+
+        eventTable.getTableHeader().setFont(
+                new Font("Arial", Font.BOLD, 13)
+        );
+
 
         JScrollPane scrollPane =
                 new JScrollPane(eventTable);
@@ -91,7 +107,11 @@ public class UserEventForm extends JFrame {
 
         // BUTTON PANEL
         JPanel buttonPanel =
-                new JPanel(new FlowLayout());
+                new JPanel(new FlowLayout(
+                        FlowLayout.CENTER,
+                        15,
+                        8
+                ));
 
         JButton refreshButton =
                 new JButton("Refresh");
@@ -101,6 +121,22 @@ public class UserEventForm extends JFrame {
 
         JButton backButton =
                 new JButton("Back");
+
+
+        styleButton(
+                refreshButton,
+                new Color(120, 80, 150)
+        );
+
+        styleButton(
+                bookButton,
+                new Color(55, 140, 100)
+        );
+
+        styleButton(
+                backButton,
+                new Color(190, 70, 70)
+        );
 
 
         buttonPanel.add(refreshButton);
@@ -143,10 +179,10 @@ public class UserEventForm extends JFrame {
                     );
 
 
-                    new UserBookingForm(
-                        userId,
-                        eventId
-                    ).setVisible(true);
+            new UserBookingForm(
+                    userId,
+                    eventId
+            ).setVisible(true);
 
         });
 
@@ -157,6 +193,27 @@ public class UserEventForm extends JFrame {
             dispose();
 
         });
+    }
+
+
+    // =========================
+    // BUTTON STYLE
+    // =========================
+
+    private void styleButton(
+            JButton button,
+            Color color
+    ) {
+
+        button.setFont(
+                new Font("Arial", Font.BOLD, 14)
+        );
+
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
     }
 
 
@@ -203,13 +260,13 @@ public class UserEventForm extends JFrame {
 
     public static void main(String[] args) {
 
-    SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
 
-        UserEventForm form =
-                new UserEventForm(1);
+            UserEventForm form =
+                    new UserEventForm(1);
 
-        form.setVisible(true);
+            form.setVisible(true);
 
-    });
-}
+        });
+    }
 }

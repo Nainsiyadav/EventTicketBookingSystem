@@ -25,9 +25,7 @@ public class MyBookingsForm extends JFrame {
 
         setLayout(new BorderLayout(10, 10));
 
-        // =========================
-        // TITLE
-        // =========================
+        // ================= TITLE =================
 
         JLabel titleLabel = new JLabel(
                 "MY BOOKINGS",
@@ -38,25 +36,43 @@ public class MyBookingsForm extends JFrame {
                 new Font("Arial", Font.BOLD, 24)
         );
 
+        titleLabel.setForeground(
+                new Color(25, 55, 90)
+        );
+
         add(titleLabel, BorderLayout.NORTH);
 
-        // =========================
-        // TABLE
-        // =========================
+        // ================= TABLE =================
 
         bookingTable = new JTable();
+
+        bookingTable.getTableHeader().setBackground(
+                new Color(45, 85, 130)
+        );
+
+        bookingTable.getTableHeader().setForeground(Color.WHITE);
+
+        bookingTable.getTableHeader().setFont(
+                new Font("Arial", Font.BOLD, 13)
+        );
 
         JScrollPane scrollPane =
                 new JScrollPane(bookingTable);
 
         add(scrollPane, BorderLayout.CENTER);
 
-        // =========================
-        // REFRESH BUTTON
-        // =========================
+        // ================= REFRESH BUTTON =================
 
         JButton refreshButton =
                 new JButton("Refresh");
+
+        refreshButton.setBackground(
+                new Color(120, 80, 150)
+        );
+
+        refreshButton.setForeground(Color.WHITE);
+        refreshButton.setFocusPainted(false);
+        refreshButton.setBorderPainted(false);
 
         refreshButton.addActionListener(e ->
                 loadMyBookings()
@@ -72,9 +88,7 @@ public class MyBookingsForm extends JFrame {
         loadMyBookings();
     }
 
-    // =========================
-    // LOAD USER BOOKINGS
-    // =========================
+    // ================= LOAD USER BOOKINGS =================
 
     private void loadMyBookings() {
 
@@ -145,15 +159,12 @@ public class MyBookingsForm extends JFrame {
         }
     }
 
-    // =========================
-    // MAIN METHOD
-    // =========================
+    // ================= MAIN METHOD =================
 
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> {
 
-            // Testing with User ID 1
             MyBookingsForm form =
                     new MyBookingsForm(1);
 
