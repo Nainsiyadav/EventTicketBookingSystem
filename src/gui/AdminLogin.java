@@ -13,76 +13,150 @@ public class AdminLogin extends JFrame implements ActionListener {
     JTextField emailField;
     JPasswordField passwordField;
 
-    JButton loginButton, clearButton;
+    JButton loginButton, clearButton, backButton;
 
     AdminService service;
 
     public AdminLogin() {
 
         setTitle("Admin Login");
-        setSize(500, 400);
-        setLayout(null);
+
+        // Full laptop screen
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+
+        // ================= MAIN PANEL =================
+
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(new Color(242, 244, 247));
+
+        setContentPane(mainPanel);
+
+        // ================= WHITE CARD =================
+
+        JPanel card = new RoundedPanel(30);
+        card.setPreferredSize(new Dimension(550, 450));
+        card.setBackground(Color.WHITE);
+        card.setLayout(null);
+
+        mainPanel.add(card);
+
+        // ================= SERVICE =================
 
         service = new AdminService();
 
         // ================= TITLE =================
+
         titleLabel = new JLabel("ADMIN LOGIN");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
+
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
         titleLabel.setForeground(new Color(25, 55, 90));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        titleLabel.setBounds(100, 40, 300, 40);
-        add(titleLabel);
+
+        titleLabel.setBounds(100, 40, 350, 40);
+
+        card.add(titleLabel);
 
         // ================= EMAIL =================
+
         emailLabel = new JLabel("Email:");
+
         emailLabel.setFont(new Font("Arial", Font.BOLD, 15));
         emailLabel.setForeground(new Color(45, 55, 70));
-        emailLabel.setBounds(80, 120, 100, 25);
-        add(emailLabel);
+
+        emailLabel.setBounds(70, 125, 100, 25);
+
+        card.add(emailLabel);
 
         emailField = new JTextField();
-        emailField.setBounds(180, 120, 220, 30);
-        add(emailField);
+
+        emailField.setFont(new Font("Arial", Font.PLAIN, 14));
+        emailField.setBounds(170, 120, 300, 35);
+
+        card.add(emailField);
 
         // ================= PASSWORD =================
+
         passwordLabel = new JLabel("Password:");
+
         passwordLabel.setFont(new Font("Arial", Font.BOLD, 15));
         passwordLabel.setForeground(new Color(45, 55, 70));
-        passwordLabel.setBounds(80, 170, 100, 25);
-        add(passwordLabel);
+
+        passwordLabel.setBounds(70, 180, 100, 25);
+
+        card.add(passwordLabel);
 
         passwordField = new JPasswordField();
-        passwordField.setBounds(180, 170, 220, 30);
-        add(passwordField);
+
+        passwordField.setFont(new Font("Arial", Font.PLAIN, 14));
+        passwordField.setBounds(170, 175, 300, 35);
+
+        card.add(passwordField);
 
         // ================= LOGIN BUTTON =================
-        loginButton = new JButton("Login");
-        loginButton.setBounds(130, 240, 100, 35);
-        loginButton.setFont(new Font("Arial", Font.BOLD, 14));
-        loginButton.setBackground(new Color(45, 85, 130));
-        loginButton.setForeground(Color.WHITE);
-        loginButton.setFocusPainted(false);
-        loginButton.setBorderPainted(false);
+
+        loginButton = createButton(
+                "Login",
+                new Color(45, 85, 130)
+        );
+
+        loginButton.setBounds(80, 250, 120, 40);
+
+        card.add(loginButton);
 
         // ================= CLEAR BUTTON =================
-        clearButton = new JButton("Clear");
-        clearButton.setBounds(250, 240, 100, 35);
-        clearButton.setFont(new Font("Arial", Font.BOLD, 14));
-        clearButton.setBackground(new Color(190, 70, 70));
-        clearButton.setForeground(Color.WHITE);
-        clearButton.setFocusPainted(false);
-        clearButton.setBorderPainted(false);
+
+        clearButton = createButton(
+                "Clear",
+                new Color(120, 120, 120)
+        );
+
+        clearButton.setBounds(215, 250, 120, 40);
+
+        card.add(clearButton);
+
+        // ================= BACK BUTTON =================
+
+        backButton = createButton(
+                "← Back",
+                new Color(90, 90, 90)
+        );
+
+        backButton.setBounds(350, 250, 120, 40);
+
+        card.add(backButton);
+
+        // ================= ACTION LISTENERS =================
 
         loginButton.addActionListener(this);
         clearButton.addActionListener(this);
-
-        add(loginButton);
-        add(clearButton);
+        backButton.addActionListener(this);
 
         setVisible(true);
     }
+
+    // =====================================================
+    // BUTTON CREATION
+    // =====================================================
+
+    private JButton createButton(String text, Color background) {
+
+        JButton button = new JButton(text);
+
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setBackground(background);
+        button.setForeground(Color.WHITE);
+
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+
+        return button;
+    }
+
+    // =====================================================
+    // BUTTON ACTIONS
+    // =====================================================
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -92,8 +166,11 @@ public class AdminLogin extends JFrame implements ActionListener {
         if (e.getSource() == loginButton) {
 
             String email = emailField.getText().trim();
+
             String password =
                     new String(passwordField.getPassword());
+
+            // Empty validation
 
             if (email.isEmpty() || password.isEmpty()) {
 
@@ -107,6 +184,8 @@ public class AdminLogin extends JFrame implements ActionListener {
                 return;
             }
 
+            // Email validation
+
             if (!email.contains("@") || !email.contains(".")) {
 
                 JOptionPane.showMessageDialog(
@@ -119,6 +198,8 @@ public class AdminLogin extends JFrame implements ActionListener {
                 return;
             }
 
+            // Check login
+
             boolean result = service.login(email, password);
 
             if (result) {
@@ -130,7 +211,11 @@ public class AdminLogin extends JFrame implements ActionListener {
                         JOptionPane.INFORMATION_MESSAGE
                 );
 
-                new Dashboard();
+                // Open Dashboard
+
+                new Dashboard().setVisible(true);
+
+                // Close Admin Login
 
                 dispose();
 
@@ -154,9 +239,79 @@ public class AdminLogin extends JFrame implements ActionListener {
             emailField.setText("");
             passwordField.setText("");
         }
+
+        // ================= BACK =================
+
+        else if (e.getSource() == backButton) {
+
+            int choice = JOptionPane.showConfirmDialog(
+                    this,
+                    "Go back to Main Login?",
+                    "Back",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (choice == JOptionPane.YES_OPTION) {
+
+                new MainLogin().setVisible(true);
+
+                dispose();
+            }
+        }
     }
 
+    // =====================================================
+    // ROUNDED CARD
+    // =====================================================
+
+    class RoundedPanel extends JPanel {
+
+        private int radius;
+
+        RoundedPanel(int radius) {
+
+            this.radius = radius;
+
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+
+            Graphics2D g2 =
+                    (Graphics2D) g.create();
+
+            g2.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON
+            );
+
+            g2.setColor(getBackground());
+
+            g2.fillRoundRect(
+                    0,
+                    0,
+                    getWidth(),
+                    getHeight(),
+                    radius,
+                    radius
+            );
+
+            g2.dispose();
+
+            super.paintComponent(g);
+        }
+    }
+
+    // =====================================================
+    // MAIN
+    // =====================================================
+
     public static void main(String[] args) {
-        new AdminLogin();
+
+        SwingUtilities.invokeLater(() -> {
+
+            new AdminLogin();
+        });
     }
 }

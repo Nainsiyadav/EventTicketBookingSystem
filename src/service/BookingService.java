@@ -22,312 +22,11 @@ public class BookingService implements BookingOperations {
         try {
 
             con = DBConnection.getConnection();
+
             con.setAutoCommit(false);
 
-            // ---------- Validate User ----------
-            String userSql =
-                    "SELECT user_id FROM users WHERE user_id=?";
+            // ================= CHECK USER =================
 
-            try (PreparedStatement ps = con.prepareStatement(userSql)) {
-
-                ps.setInt(1, booking.getUserId());
-
-                try (ResultSet rs = ps.executeQuery()) {
-
-                    if (!rs.next()) {
-                        con.rollback();
-                        return "User ID does not exist.";
-                    }
-                }
-            }
-
-            // ---------- Validate Event ----------
-            String eventSql =
-                    "SELECT event_id FROM events WHERE event_id=?";
-
-            try (PreparedStatement ps = con.prepareStatement(eventSql)) {
-
-                ps.setInt(1, booking.getEventId());
-
-                try (ResultSet rs = ps.executeQuery()) {
-
-                    if (!rs.next()) {
-                        con.rollback();
-                        return "Event ID does not exist.";
-                    }
-                }
-            }
-
-            // ---------- Validate Ticket Type ----------
-            String ticketSql =
-                    "SELECT price, available_quantity, event_id " +
-                    "FROM ticket_types WHERE ticket_type_id=?";
-
-            double price;
-            int availableQuantity;
-            int ticketEventId;
-
-            try (PreparedStatement ps = con.prepareStatement(ticketSql)) {
-
-                ps.setInt(1, booking.getTicketTypeId());
-
-                try (ResultSet rs = ps.executeQuery()) {
-
-                    if (!rs.next()) {
-                        con.rollback();
-                        return "Ticket Type ID does not exist.";
-                    }
-
-                    price = rs.getDouble("price");
-                    availableQuantity = rs.getInt("available_quantity");
-                    ticketEventId = rs.getInt("event_id");
-                }
-            }
-
-            // ---------- Ticket belongs to selected event ----------
-            if (ticketEventId != booking.getEventId()) {
-
-                con.rollback();
-
-                return "Selected Ticket Type does not belong to the selected Event.";
-            }
-
-            // ---------- Validate Quantity ----------
-            if (booking.getQuantity() <= 0) {
-
-                con.rollback();
-
-                return "Quantity must be greater than 0.";
-            }
-
-            // ---------- Available Quantity ----------
-            if (booking.getQuantity() > availableQuantity) {
-
-                con.rollback();
-
-                return "Only " + availableQuantity +
-                       " tickets are available.";
-            }
-
-            // ---------- Validate Amount ----------
-            double expectedAmount =
-                    price * booking.getQuantity();
-
-            if (Math.abs(expectedAmount - booking.getTotalAmount()) > 0.01) {
-
-                con.rollback();
-
-                return String.format(
-                        "Invalid Total Amount.\nExpected Amount: %.2f\nEntered Amount: %.2f",
-                        expectedAmount,
-                        booking.getTotalAmount()
-                );
-            }
-
-            // ---------- Insert Booking ----------
-            String insertSql =
-                    "INSERT INTO bookings " +
-                    "(user_id, event_id, ticket_type_id, quantity, total_amount) " +
-                    "VALUES (?, ?, ?, ?, ?)";
-
-             try (PreparedStatement ps =
-                con.prepareStatement(
-                        insertSql,
-                        java.sql.Statement.RETURN_GENERATED_KEYS
-                        )) {
-
-                ps.setInt(1, booking.getUserId());
-                ps.setInt(2, booking.getEventId());
-                ps.setInt(3, booking.getTicketTypeId());
-                ps.setInt(4, booking.getQuantity());
-                ps.setDouble(5, booking.getTotalAmount());
-
-                int rows = ps.executeUpdate();
-
-                if (rows == 0) {
-                    con.rollback();
-                    return "Booking could not be added.";
-                }
-
-                // Get AUTO_INCREMENT booking ID
-                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-
-                    if (generatedKeys.next()) {
-
-                        int bookingId =
-                                generatedKeys.getInt(1);
-
-                        booking.setBookingId(bookingId);
-
-                    } else {
-
-                        con.rollback();
-                        return "Booking ID could not be generated.";
-                    }
-                }
-            }
-
-            // ---------- Reduce Available Tickets ----------
-            String updateTicketSql =
-                    "UPDATE ticket_types " +
-                    "SET available_quantity = available_quantity - ? " +
-                    "WHERE ticket_type_id=?";
-
-            try (PreparedStatement ps =
-                         con.prepareStatement(updateTicketSql)) {
-
-                ps.setInt(1, booking.getQuantity());
-                ps.setInt(2, booking.getTicketTypeId());
-
-                ps.executeUpdate();
-            }
-
-            con.commit();
-
-            return "Booking Added Successfully!";
-
-        } catch (Exception e) {
-
-            try {
-                if (con != null) {
-                    con.rollback();
-                }
-            } catch (Exception ignored) {
-            }
-
-            e.printStackTrace();
-
-            return "Database error while adding booking.";
-
-        } finally {
-
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (Exception ignored) {
-            }
-        }
-    }
-
-
-    // =====================================================
-    // VIEW BOOKINGS
-    // =====================================================
-
-    @Override
-    public void viewBookings() {
-
-        String sql = "SELECT * FROM bookings";
-
-        try (
-                Connection con = DBConnection.getConnection();
-                PreparedStatement ps = con.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()
-        ) {
-
-            System.out.println();
-            System.out.println("========== BOOKINGS ==========");
-
-            while (rs.next()) {
-
-                System.out.println(
-                        "Booking ID: " + rs.getInt("booking_id") +
-                        " | User ID: " + rs.getInt("user_id") +
-                        " | Event ID: " + rs.getInt("event_id") +
-                        " | Ticket Type ID: " +
-                        rs.getInt("ticket_type_id") +
-                        " | Quantity: " +
-                        rs.getInt("quantity") +
-                        " | Total: " +
-                        rs.getDouble("total_amount")
-                );
-            }
-
-            System.out.println("==============================");
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
-    }
-
-
-    // =====================================================
-    // UPDATE BOOKING
-    // =====================================================
-
-    @Override
-    public String updateBooking(Booking booking, String password) {
-
-        Connection con = null;
-
-        try {
-
-            con = DBConnection.getConnection();
-            con.setAutoCommit(false);
-
-            // ---------- Get Existing Booking ----------
-            String oldSql =
-                    "SELECT user_id, event_id, ticket_type_id, quantity " +
-                    "FROM bookings WHERE booking_id=?";
-
-            int oldUserId;
-            int oldEventId;
-            int oldTicketTypeId;
-            int oldQuantity;
-
-            try (PreparedStatement ps = con.prepareStatement(oldSql)) {
-
-                ps.setInt(1, booking.getBookingId());
-
-                try (ResultSet rs = ps.executeQuery()) {
-
-                    if (!rs.next()) {
-
-                        con.rollback();
-
-                        return "Booking ID does not exist.";
-                    }
-
-                    oldUserId = rs.getInt("user_id");
-                    oldEventId = rs.getInt("event_id");
-                    oldTicketTypeId = rs.getInt("ticket_type_id");
-                    oldQuantity = rs.getInt("quantity");
-                }
-            }
-
-            // ---------- Verify Password ----------
-            String passwordSql =
-                    "SELECT password FROM users WHERE user_id=?";
-
-            try (PreparedStatement ps =
-                         con.prepareStatement(passwordSql)) {
-
-                ps.setInt(1, oldUserId);
-
-                try (ResultSet rs = ps.executeQuery()) {
-
-                    if (!rs.next()) {
-
-                        con.rollback();
-
-                        return "User associated with this booking was not found.";
-                    }
-
-                    String actualPassword =
-                            rs.getString("password");
-
-                    if (!actualPassword.equals(password)) {
-
-                        con.rollback();
-
-                        return "Incorrect password. Booking was not updated.";
-                    }
-                }
-            }
-
-            // ---------- Validate New User ----------
             String userSql =
                     "SELECT user_id FROM users WHERE user_id=?";
 
@@ -347,7 +46,8 @@ public class BookingService implements BookingOperations {
                 }
             }
 
-            // ---------- Validate Event ----------
+            // ================= CHECK EVENT =================
+
             String eventSql =
                     "SELECT event_id FROM events WHERE event_id=?";
 
@@ -367,15 +67,8 @@ public class BookingService implements BookingOperations {
                 }
             }
 
-            // ---------- Validate Quantity ----------
-            if (booking.getQuantity() <= 0) {
+            // ================= CHECK TICKET =================
 
-                con.rollback();
-
-                return "Quantity must be greater than 0.";
-            }
-
-            // ---------- Ticket Type ----------
             String ticketSql =
                     "SELECT price, available_quantity, event_id " +
                     "FROM ticket_types WHERE ticket_type_id=?";
@@ -398,9 +91,484 @@ public class BookingService implements BookingOperations {
                         return "Ticket Type ID does not exist.";
                     }
 
-                    price = rs.getDouble("price");
+                    price =
+                            rs.getDouble("price");
+
                     availableQuantity =
                             rs.getInt("available_quantity");
+
+                    ticketEventId =
+                            rs.getInt("event_id");
+                }
+            }
+
+            // ================= CHECK EVENT/TICKET =================
+
+            if (ticketEventId != booking.getEventId()) {
+
+                con.rollback();
+
+                return "Selected Ticket Type does not belong to the selected Event.";
+            }
+
+            // ================= CHECK QUANTITY =================
+
+            if (booking.getQuantity() <= 0) {
+
+                con.rollback();
+
+                return "Quantity must be greater than 0.";
+            }
+
+            if (booking.getQuantity() > availableQuantity) {
+
+                con.rollback();
+
+                return "Only " + availableQuantity +
+                        " tickets are available.";
+            }
+
+            // ================= CHECK AMOUNT =================
+
+            double expectedAmount =
+                    price * booking.getQuantity();
+
+            if (Math.abs(
+                    expectedAmount -
+                    booking.getTotalAmount()
+            ) > 0.01) {
+
+                con.rollback();
+
+                return String.format(
+                        "Invalid Total Amount.\n" +
+                        "Expected Amount: %.2f\n" +
+                        "Entered Amount: %.2f",
+                        expectedAmount,
+                        booking.getTotalAmount()
+                );
+            }
+
+            // ================= INSERT BOOKING =================
+
+            String insertSql =
+                    "INSERT INTO bookings " +
+                    "(user_id, event_id, ticket_type_id, " +
+                    "quantity, total_amount) " +
+                    "VALUES (?, ?, ?, ?, ?)";
+
+            try (PreparedStatement ps =
+                         con.prepareStatement(insertSql)) {
+
+                ps.setInt(
+                        1,
+                        booking.getUserId()
+                );
+
+                ps.setInt(
+                        2,
+                        booking.getEventId()
+                );
+
+                ps.setInt(
+                        3,
+                        booking.getTicketTypeId()
+                );
+
+                ps.setInt(
+                        4,
+                        booking.getQuantity()
+                );
+
+                ps.setDouble(
+                        5,
+                        booking.getTotalAmount()
+                );
+
+                int rows =
+                        ps.executeUpdate();
+
+                if (rows == 0) {
+
+                    con.rollback();
+
+                    return "Booking could not be added.";
+                }
+            }
+
+            // ================= REDUCE TICKET =================
+
+            String updateTicketSql =
+                    "UPDATE ticket_types " +
+                    "SET available_quantity = " +
+                    "available_quantity - ? " +
+                    "WHERE ticket_type_id=?";
+
+            try (PreparedStatement ps =
+                         con.prepareStatement(updateTicketSql)) {
+
+                ps.setInt(
+                        1,
+                        booking.getQuantity()
+                );
+
+                ps.setInt(
+                        2,
+                        booking.getTicketTypeId()
+                );
+
+                ps.executeUpdate();
+            }
+
+            con.commit();
+
+            return "Booking Added Successfully!";
+
+        } catch (Exception e) {
+
+            try {
+
+                if (con != null) {
+
+                    con.rollback();
+                }
+
+            } catch (Exception ignored) {
+            }
+
+            e.printStackTrace();
+
+            return "Database error while adding booking.";
+
+        } finally {
+
+            try {
+
+                if (con != null) {
+
+                    con.close();
+                }
+
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    // =====================================================
+    // VIEW BOOKINGS - TERMINAL
+    // =====================================================
+
+    @Override
+    public void viewBookings() {
+
+        String sql =
+                "SELECT * FROM bookings";
+
+        try (
+                Connection con =
+                        DBConnection.getConnection();
+
+                PreparedStatement ps =
+                        con.prepareStatement(sql);
+
+                ResultSet rs =
+                        ps.executeQuery()
+        ) {
+
+            System.out.println();
+
+            System.out.println(
+                    "========== BOOKINGS =========="
+            );
+
+            while (rs.next()) {
+
+                System.out.println(
+                        "Booking ID: " +
+                        rs.getInt("booking_id") +
+
+                        " | User ID: " +
+                        rs.getInt("user_id") +
+
+                        " | Event ID: " +
+                        rs.getInt("event_id") +
+
+                        " | Ticket Type ID: " +
+                        rs.getInt("ticket_type_id") +
+
+                        " | Quantity: " +
+                        rs.getInt("quantity") +
+
+                        " | Total: " +
+                        rs.getDouble("total_amount")
+                );
+            }
+
+            System.out.println(
+                    "=============================="
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    // =====================================================
+    // NEW METHOD - GET BOOKINGS FOR GUI TABLE
+    // =====================================================
+
+    public Object[][] getBookingsForTable() {
+
+        String sql =
+                "SELECT booking_id, user_id, event_id, " +
+                "ticket_type_id, quantity, total_amount " +
+                "FROM bookings " +
+                "ORDER BY booking_id";
+
+        java.util.ArrayList<Object[]> rows =
+                new java.util.ArrayList<>();
+
+        try (
+                Connection con =
+                        DBConnection.getConnection();
+
+                PreparedStatement ps =
+                        con.prepareStatement(sql);
+
+                ResultSet rs =
+                        ps.executeQuery()
+        ) {
+
+            while (rs.next()) {
+
+                Object[] row = {
+
+                    rs.getInt("booking_id"),
+
+                    rs.getInt("user_id"),
+
+                    rs.getInt("event_id"),
+
+                    rs.getInt("ticket_type_id"),
+
+                    rs.getInt("quantity"),
+
+                    rs.getDouble("total_amount")
+                };
+
+                rows.add(row);
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        Object[][] data =
+                new Object[rows.size()][6];
+
+        for (int i = 0; i < rows.size(); i++) {
+
+            data[i] = rows.get(i);
+        }
+
+        return data;
+    }
+
+    // =====================================================
+    // UPDATE BOOKING
+    // =====================================================
+
+    @Override
+    public String updateBooking(
+            Booking booking,
+            String password) {
+
+        Connection con = null;
+
+        try {
+
+            con = DBConnection.getConnection();
+
+            con.setAutoCommit(false);
+
+            // ================= OLD BOOKING =================
+
+            String oldSql =
+                    "SELECT user_id, event_id, " +
+                    "ticket_type_id, quantity " +
+                    "FROM bookings WHERE booking_id=?";
+
+            int oldUserId;
+            int oldEventId;
+            int oldTicketTypeId;
+            int oldQuantity;
+
+            try (PreparedStatement ps =
+                         con.prepareStatement(oldSql)) {
+
+                ps.setInt(
+                        1,
+                        booking.getBookingId()
+                );
+
+                try (ResultSet rs =
+                             ps.executeQuery()) {
+
+                    if (!rs.next()) {
+
+                        con.rollback();
+
+                        return "Booking ID does not exist.";
+                    }
+
+                    oldUserId =
+                            rs.getInt("user_id");
+
+                    oldEventId =
+                            rs.getInt("event_id");
+
+                    oldTicketTypeId =
+                            rs.getInt("ticket_type_id");
+
+                    oldQuantity =
+                            rs.getInt("quantity");
+                }
+            }
+
+            // ================= PASSWORD =================
+
+            String passwordSql =
+                    "SELECT password FROM users " +
+                    "WHERE user_id=?";
+
+            try (PreparedStatement ps =
+                         con.prepareStatement(passwordSql)) {
+
+                ps.setInt(
+                        1,
+                        oldUserId
+                );
+
+                try (ResultSet rs =
+                             ps.executeQuery()) {
+
+                    if (!rs.next()) {
+
+                        con.rollback();
+
+                        return "User associated with this booking was not found.";
+                    }
+
+                    String actualPassword =
+                            rs.getString("password");
+
+                    if (!actualPassword.equals(password)) {
+
+                        con.rollback();
+
+                        return "Incorrect password. Booking was not updated.";
+                    }
+                }
+            }
+
+            // ================= CHECK USER =================
+
+            String userSql =
+                    "SELECT user_id FROM users " +
+                    "WHERE user_id=?";
+
+            try (PreparedStatement ps =
+                         con.prepareStatement(userSql)) {
+
+                ps.setInt(
+                        1,
+                        booking.getUserId()
+                );
+
+                try (ResultSet rs =
+                             ps.executeQuery()) {
+
+                    if (!rs.next()) {
+
+                        con.rollback();
+
+                        return "User ID does not exist.";
+                    }
+                }
+            }
+
+            // ================= CHECK EVENT =================
+
+            String eventSql =
+                    "SELECT event_id FROM events " +
+                    "WHERE event_id=?";
+
+            try (PreparedStatement ps =
+                         con.prepareStatement(eventSql)) {
+
+                ps.setInt(
+                        1,
+                        booking.getEventId()
+                );
+
+                try (ResultSet rs =
+                             ps.executeQuery()) {
+
+                    if (!rs.next()) {
+
+                        con.rollback();
+
+                        return "Event ID does not exist.";
+                    }
+                }
+            }
+
+            // ================= QUANTITY =================
+
+            if (booking.getQuantity() <= 0) {
+
+                con.rollback();
+
+                return "Quantity must be greater than 0.";
+            }
+
+            // ================= TICKET =================
+
+            String ticketSql =
+                    "SELECT price, available_quantity, event_id " +
+                    "FROM ticket_types " +
+                    "WHERE ticket_type_id=?";
+
+            double price;
+            int availableQuantity;
+            int ticketEventId;
+
+            try (PreparedStatement ps =
+                         con.prepareStatement(ticketSql)) {
+
+                ps.setInt(
+                        1,
+                        booking.getTicketTypeId()
+                );
+
+                try (ResultSet rs =
+                             ps.executeQuery()) {
+
+                    if (!rs.next()) {
+
+                        con.rollback();
+
+                        return "Ticket Type ID does not exist.";
+                    }
+
+                    price =
+                            rs.getDouble("price");
+
+                    availableQuantity =
+                            rs.getInt("available_quantity");
+
                     ticketEventId =
                             rs.getInt("event_id");
                 }
@@ -413,85 +581,135 @@ public class BookingService implements BookingOperations {
                 return "Selected Ticket Type does not belong to the selected Event.";
             }
 
-            // If same ticket type is being updated,
-            // old quantity becomes available again.
-            if (oldTicketTypeId == booking.getTicketTypeId()) {
+            if (oldTicketTypeId ==
+                    booking.getTicketTypeId()) {
 
                 availableQuantity += oldQuantity;
             }
 
-            if (booking.getQuantity() > availableQuantity) {
+            if (booking.getQuantity() >
+                    availableQuantity) {
 
                 con.rollback();
 
-                return "Only " + availableQuantity +
-                       " tickets are available.";
+                return "Only " +
+                        availableQuantity +
+                        " tickets are available.";
             }
 
-            // ---------- Amount Validation ----------
+            // ================= AMOUNT =================
+
             double expectedAmount =
                     price * booking.getQuantity();
 
-            if (Math.abs(expectedAmount -
-                    booking.getTotalAmount()) > 0.01) {
+            if (Math.abs(
+                    expectedAmount -
+                    booking.getTotalAmount()
+            ) > 0.01) {
 
                 con.rollback();
 
                 return String.format(
-                        "Invalid Total Amount.\nExpected Amount: %.2f\nEntered Amount: %.2f",
+                        "Invalid Total Amount.\n" +
+                        "Expected Amount: %.2f\n" +
+                        "Entered Amount: %.2f",
                         expectedAmount,
                         booking.getTotalAmount()
                 );
             }
 
-            // ---------- Restore Old Ticket Quantity ----------
+            // ================= RESTORE OLD TICKETS =================
+
             String restoreSql =
                     "UPDATE ticket_types " +
-                    "SET available_quantity = available_quantity + ? " +
+                    "SET available_quantity = " +
+                    "available_quantity + ? " +
                     "WHERE ticket_type_id=?";
 
             try (PreparedStatement ps =
                          con.prepareStatement(restoreSql)) {
 
-                ps.setInt(1, oldQuantity);
-                ps.setInt(2, oldTicketTypeId);
+                ps.setInt(
+                        1,
+                        oldQuantity
+                );
+
+                ps.setInt(
+                        2,
+                        oldTicketTypeId
+                );
 
                 ps.executeUpdate();
             }
 
-            // ---------- Reduce New Ticket Quantity ----------
+            // ================= REDUCE NEW TICKETS =================
+
             String reduceSql =
                     "UPDATE ticket_types " +
-                    "SET available_quantity = available_quantity - ? " +
+                    "SET available_quantity = " +
+                    "available_quantity - ? " +
                     "WHERE ticket_type_id=?";
 
             try (PreparedStatement ps =
                          con.prepareStatement(reduceSql)) {
 
-                ps.setInt(1, booking.getQuantity());
-                ps.setInt(2, booking.getTicketTypeId());
+                ps.setInt(
+                        1,
+                        booking.getQuantity()
+                );
+
+                ps.setInt(
+                        2,
+                        booking.getTicketTypeId()
+                );
 
                 ps.executeUpdate();
             }
 
-            // ---------- Update Booking ----------
+            // ================= UPDATE BOOKING =================
+
             String updateSql =
                     "UPDATE bookings SET " +
-                    "user_id=?, event_id=?, ticket_type_id=?, " +
-                    "quantity=?, total_amount=? " +
+                    "user_id=?, event_id=?, " +
+                    "ticket_type_id=?, quantity=?, " +
+                    "total_amount=? " +
                     "WHERE booking_id=?";
 
             try (PreparedStatement ps =
                          con.prepareStatement(updateSql)) {
 
-                ps.setInt(1, booking.getUserId());
-                ps.setInt(2, booking.getEventId());
-                ps.setInt(3, booking.getTicketTypeId());
-                ps.setInt(4, booking.getQuantity());
-                ps.setDouble(5, booking.getTotalAmount());
-                ps.setInt(6, booking.getBookingId());
+                ps.setInt(
+                        1,
+                        booking.getUserId()
+                );
 
-                int rows = ps.executeUpdate();
+                ps.setInt(
+                        2,
+                        booking.getEventId()
+                );
+
+                ps.setInt(
+                        3,
+                        booking.getTicketTypeId()
+                );
+
+                ps.setInt(
+                        4,
+                        booking.getQuantity()
+                );
+
+                ps.setDouble(
+                        5,
+                        booking.getTotalAmount()
+                );
+
+                ps.setInt(
+                        6,
+                        booking.getBookingId()
+                );
+
+                int rows =
+                        ps.executeUpdate();
 
                 if (rows == 0) {
 
@@ -508,9 +726,12 @@ public class BookingService implements BookingOperations {
         } catch (Exception e) {
 
             try {
+
                 if (con != null) {
+
                     con.rollback();
                 }
+
             } catch (Exception ignored) {
             }
 
@@ -521,30 +742,36 @@ public class BookingService implements BookingOperations {
         } finally {
 
             try {
+
                 if (con != null) {
+
                     con.close();
                 }
+
             } catch (Exception ignored) {
             }
         }
     }
-
 
     // =====================================================
     // DELETE BOOKING
     // =====================================================
 
     @Override
-    public String deleteBooking(int bookingId, String password) {
+    public String deleteBooking(
+            int bookingId,
+            String password) {
 
         Connection con = null;
 
         try {
 
             con = DBConnection.getConnection();
+
             con.setAutoCommit(false);
 
-            // ---------- Find Booking ----------
+            // ================= FIND BOOKING =================
+
             String findSql =
                     "SELECT user_id, ticket_type_id, quantity " +
                     "FROM bookings WHERE booking_id=?";
@@ -556,9 +783,13 @@ public class BookingService implements BookingOperations {
             try (PreparedStatement ps =
                          con.prepareStatement(findSql)) {
 
-                ps.setInt(1, bookingId);
+                ps.setInt(
+                        1,
+                        bookingId
+                );
 
-                try (ResultSet rs = ps.executeQuery()) {
+                try (ResultSet rs =
+                             ps.executeQuery()) {
 
                     if (!rs.next()) {
 
@@ -567,24 +798,33 @@ public class BookingService implements BookingOperations {
                         return "Booking ID does not exist.";
                     }
 
-                    userId = rs.getInt("user_id");
+                    userId =
+                            rs.getInt("user_id");
+
                     ticketTypeId =
                             rs.getInt("ticket_type_id");
+
                     quantity =
                             rs.getInt("quantity");
                 }
             }
 
-            // ---------- Verify Password ----------
+            // ================= PASSWORD =================
+
             String passwordSql =
-                    "SELECT password FROM users WHERE user_id=?";
+                    "SELECT password FROM users " +
+                    "WHERE user_id=?";
 
             try (PreparedStatement ps =
                          con.prepareStatement(passwordSql)) {
 
-                ps.setInt(1, userId);
+                ps.setInt(
+                        1,
+                        userId
+                );
 
-                try (ResultSet rs = ps.executeQuery()) {
+                try (ResultSet rs =
+                             ps.executeQuery()) {
 
                     if (!rs.next()) {
 
@@ -605,16 +845,22 @@ public class BookingService implements BookingOperations {
                 }
             }
 
-            // ---------- Delete Booking ----------
+            // ================= DELETE =================
+
             String deleteSql =
-                    "DELETE FROM bookings WHERE booking_id=?";
+                    "DELETE FROM bookings " +
+                    "WHERE booking_id=?";
 
             try (PreparedStatement ps =
                          con.prepareStatement(deleteSql)) {
 
-                ps.setInt(1, bookingId);
+                ps.setInt(
+                        1,
+                        bookingId
+                );
 
-                int rows = ps.executeUpdate();
+                int rows =
+                        ps.executeUpdate();
 
                 if (rows == 0) {
 
@@ -624,17 +870,26 @@ public class BookingService implements BookingOperations {
                 }
             }
 
-            // ---------- Restore Tickets ----------
+            // ================= RESTORE TICKETS =================
+
             String restoreSql =
                     "UPDATE ticket_types " +
-                    "SET available_quantity = available_quantity + ? " +
+                    "SET available_quantity = " +
+                    "available_quantity + ? " +
                     "WHERE ticket_type_id=?";
 
             try (PreparedStatement ps =
                          con.prepareStatement(restoreSql)) {
 
-                ps.setInt(1, quantity);
-                ps.setInt(2, ticketTypeId);
+                ps.setInt(
+                        1,
+                        quantity
+                );
+
+                ps.setInt(
+                        2,
+                        ticketTypeId
+                );
 
                 ps.executeUpdate();
             }
@@ -646,9 +901,12 @@ public class BookingService implements BookingOperations {
         } catch (Exception e) {
 
             try {
+
                 if (con != null) {
+
                     con.rollback();
                 }
+
             } catch (Exception ignored) {
             }
 
@@ -659,9 +917,12 @@ public class BookingService implements BookingOperations {
         } finally {
 
             try {
+
                 if (con != null) {
+
                     con.close();
                 }
+
             } catch (Exception ignored) {
             }
         }

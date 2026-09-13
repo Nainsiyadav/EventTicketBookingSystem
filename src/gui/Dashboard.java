@@ -10,131 +10,299 @@ public class Dashboard extends JFrame implements ActionListener {
     JLabel titleLabel, welcomeLabel;
 
     JButton adminButton, userButton, eventButton,
-            bookingButton, paymentButton, reportButton, logoutButton;
+            bookingButton, paymentButton, reportButton,
+            backButton, logoutButton;
 
-    public  Dashboard() {
+    public Dashboard() {
 
-        setTitle("Event Ticket Booking System - Dashboard");
-        setSize(850, 600);
-        setLayout(null);
+        setTitle("Event Ticket Booking System - Admin Dashboard");
+
+        // Full laptop screen
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
 
-        // ================= TITLE =================
+        // =====================================================
+        // MAIN PANEL
+        // =====================================================
 
-        titleLabel = new JLabel("EVENT TICKET BOOKING SYSTEM");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
-        titleLabel.setForeground(new Color(25, 55, 90));
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        titleLabel.setBounds(175, 30, 500, 40);
-        add(titleLabel);
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(new Color(242, 244, 247));
 
-        // ================= WELCOME =================
+        setContentPane(mainPanel);
 
-        welcomeLabel = new JLabel("Welcome, Admin!");
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        welcomeLabel.setForeground(new Color(70, 70, 70));
-        welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        // =====================================================
+        // CENTER CARD
+        // =====================================================
+
+        JPanel card = new RoundedPanel(30);
+
+        card.setPreferredSize(new Dimension(850, 600));
+        card.setBackground(Color.WHITE);
+        card.setLayout(null);
+
+        // Automatically center card
+        mainPanel.add(card);
+
+        // =====================================================
+        // TITLE
+        // =====================================================
+
+        titleLabel = new JLabel(
+                "EVENT TICKET BOOKING SYSTEM"
+        );
+
+        titleLabel.setFont(
+                new Font("Arial", Font.BOLD, 26)
+        );
+
+        titleLabel.setForeground(
+                new Color(25, 55, 90)
+        );
+
+        titleLabel.setHorizontalAlignment(
+                SwingConstants.CENTER
+        );
+
+        titleLabel.setBounds(175, 35, 500, 40);
+
+        card.add(titleLabel);
+
+        // =====================================================
+        // WELCOME
+        // =====================================================
+
+        welcomeLabel = new JLabel(
+                "Welcome, Admin!"
+        );
+
+        welcomeLabel.setFont(
+                new Font("Arial", Font.BOLD, 18)
+        );
+
+        welcomeLabel.setForeground(
+                new Color(70, 70, 70)
+        );
+
+        welcomeLabel.setHorizontalAlignment(
+                SwingConstants.CENTER
+        );
+
         welcomeLabel.setBounds(325, 85, 200, 30);
-        add(welcomeLabel);
 
-        // ================= ADMIN =================
+        card.add(welcomeLabel);
 
-        adminButton = new JButton("Admin Management");
+        // =====================================================
+        // ADMIN MANAGEMENT
+        // =====================================================
+
+        adminButton = createButton(
+                "Admin Management",
+                new Color(45, 85, 130)
+        );
+
         adminButton.setBounds(80, 150, 200, 50);
-        adminButton.setBackground(new Color(45, 85, 130));
-        adminButton.setForeground(Color.WHITE);
-        adminButton.addActionListener(this);
-        add(adminButton);
 
-        // ================= USER =================
+        card.add(adminButton);
 
-        userButton = new JButton("User Management");
+        // =====================================================
+        // USER MANAGEMENT
+        // =====================================================
+
+        userButton = createButton(
+                "User Management",
+                new Color(55, 140, 100)
+        );
+
         userButton.setBounds(320, 150, 200, 50);
-        userButton.setBackground(new Color(55, 140, 100));
-        userButton.setForeground(Color.WHITE);
-        userButton.addActionListener(this);
-        add(userButton);
 
-        // ================= EVENT =================
+        card.add(userButton);
 
-        eventButton = new JButton("Event Management");
+        // =====================================================
+        // EVENT MANAGEMENT
+        // =====================================================
+
+        eventButton = createButton(
+                "Event Management",
+                new Color(120, 80, 150)
+        );
+
         eventButton.setBounds(560, 150, 200, 50);
-        eventButton.setBackground(new Color(120, 80, 150));
-        eventButton.setForeground(Color.WHITE);
-        eventButton.addActionListener(this);
-        add(eventButton);
 
-        // ================= BOOKING =================
+        card.add(eventButton);
 
-        bookingButton = new JButton("Booking Management");
+        // =====================================================
+        // BOOKING MANAGEMENT
+        // =====================================================
+
+        bookingButton = createButton(
+                "Booking Management",
+                new Color(210, 130, 50)
+        );
+
         bookingButton.setBounds(80, 240, 200, 50);
-        bookingButton.setBackground(new Color(210, 130, 50));
-        bookingButton.setForeground(Color.WHITE);
-        bookingButton.addActionListener(this);
-        add(bookingButton);
 
-        // ================= PAYMENT =================
+        card.add(bookingButton);
 
-        paymentButton = new JButton("Payment Management");
+        // =====================================================
+        // PAYMENT MANAGEMENT
+        // =====================================================
+
+        paymentButton = createButton(
+                "Payment Management",
+                new Color(40, 130, 130)
+        );
+
         paymentButton.setBounds(320, 240, 200, 50);
-        paymentButton.setBackground(new Color(40, 130, 130));
-        paymentButton.setForeground(Color.WHITE);
-        paymentButton.addActionListener(this);
-        add(paymentButton);
 
-        // ================= REPORT =================
+        card.add(paymentButton);
 
-        reportButton = new JButton("Reports");
+        // =====================================================
+        // REPORTS
+        // =====================================================
+
+        reportButton = createButton(
+                "Reports",
+                new Color(70, 90, 120)
+        );
+
         reportButton.setBounds(560, 240, 200, 50);
-        reportButton.setBackground(new Color(70, 90, 120));
-        reportButton.setForeground(Color.WHITE);
-        reportButton.addActionListener(this);
-        add(reportButton);
 
-        // ================= LOGOUT =================
+        card.add(reportButton);
 
-        logoutButton = new JButton("Logout");
-        logoutButton.setBounds(325, 360, 200, 50);
-        logoutButton.setBackground(new Color(190, 70, 70));
-        logoutButton.setForeground(Color.WHITE);
-        logoutButton.addActionListener(this);
-        add(logoutButton);
+        // =====================================================
+        // BACK BUTTON
+        // =====================================================
+
+        backButton = createButton(
+                "← Back",
+                new Color(90, 90, 90)
+        );
+
+        backButton.setBounds(190, 360, 180, 50);
+
+        card.add(backButton);
+
+        // =====================================================
+        // LOGOUT BUTTON
+        // =====================================================
+
+        logoutButton = createButton(
+                "Logout",
+                new Color(190, 70, 70)
+        );
+
+        logoutButton.setBounds(470, 360, 180, 50);
+
+        card.add(logoutButton);
+
+        // =====================================================
+        // SHOW
+        // =====================================================
 
         setVisible(true);
     }
 
-    // ================= BUTTON ACTIONS =================
+    // =========================================================
+    // CREATE BUTTON
+    // =========================================================
+
+    private JButton createButton(
+            String text,
+            Color background
+    ) {
+
+        JButton button = new JButton(text);
+
+        button.setFont(
+                new Font("Arial", Font.BOLD, 15)
+        );
+
+        button.setBackground(background);
+
+        button.setForeground(Color.WHITE);
+
+        button.setFocusPainted(false);
+
+        button.setBorderPainted(false);
+
+        button.addActionListener(this);
+
+        return button;
+    }
+
+    // =========================================================
+    // BUTTON ACTIONS
+    // =========================================================
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        // Admin Management
         if (e.getSource() == adminButton) {
-            new AdminForm();
+
+            new AdminForm().setVisible(true);
+            dispose();
         }
 
+        // User Management
         else if (e.getSource() == userButton) {
-            new UserForm();
+
+            new UserForm().setVisible(true);
+            dispose();
         }
 
+        // Event Management
         else if (e.getSource() == eventButton) {
-            new EventForm();
+
+            new EventForm().setVisible(true);
+            dispose();
         }
 
+        // Booking Management
         else if (e.getSource() == bookingButton) {
-            new BookingForm();
+
+            new BookingForm().setVisible(true);
+            dispose();
         }
 
+        // Payment Management
         else if (e.getSource() == paymentButton) {
-            new PaymentForm();
+
+            new PaymentForm().setVisible(true);
+            dispose();
         }
 
+        // Reports
         else if (e.getSource() == reportButton) {
 
-            System.out.println("Reports button clicked!");
-            new ReportForm();
-            System.out.println("ReportForm opened!");
+            new ReportForm().setVisible(true);
+            dispose();
         }
+
+        // =====================================================
+        // BACK
+        // =====================================================
+
+        else if (e.getSource() == backButton) {
+
+            int choice = JOptionPane.showConfirmDialog(
+                    this,
+                    "Go back to Main Login?",
+                    "Back",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (choice == JOptionPane.YES_OPTION) {
+
+                new MainLogin().setVisible(true);
+                dispose();
+            }
+        }
+
+        // =====================================================
+        // LOGOUT
+        // =====================================================
 
         else if (e.getSource() == logoutButton) {
 
@@ -147,15 +315,62 @@ public class Dashboard extends JFrame implements ActionListener {
 
             if (choice == JOptionPane.YES_OPTION) {
 
+                new MainLogin().setVisible(true);
                 dispose();
-                new AdminLogin();
             }
         }
     }
 
-    // ================= MAIN =================
+    // =========================================================
+    // ROUNDED CARD
+    // =========================================================
+
+    class RoundedPanel extends JPanel {
+
+        private int radius;
+
+        RoundedPanel(int radius) {
+
+            this.radius = radius;
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+
+            Graphics2D g2 =
+                    (Graphics2D) g.create();
+
+            g2.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON
+            );
+
+            g2.setColor(getBackground());
+
+            g2.fillRoundRect(
+                    0,
+                    0,
+                    getWidth(),
+                    getHeight(),
+                    radius,
+                    radius
+            );
+
+            g2.dispose();
+
+            super.paintComponent(g);
+        }
+    }
+
+    // =========================================================
+    // MAIN
+    // =========================================================
 
     public static void main(String[] args) {
-        new Dashboard();
+
+        SwingUtilities.invokeLater(() -> {
+            new Dashboard();
+        });
     }
 }

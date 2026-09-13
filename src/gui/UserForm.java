@@ -10,22 +10,35 @@ import java.awt.event.ActionListener;
 
 public class UserForm extends JFrame implements ActionListener {
 
-    JLabel titleLabel, idLabel, nameLabel, emailLabel, phoneLabel, passwordLabel;
+    JLabel titleLabel, idLabel, nameLabel, emailLabel,
+            phoneLabel, passwordLabel;
 
     JTextField idField, nameField, emailField, phoneField;
     JPasswordField passwordField;
 
-    JButton addButton, updateButton, deleteButton, viewButton;
+    JButton addButton, updateButton, deleteButton,
+            viewButton, clearButton, backButton;
 
     UserService service;
 
     public UserForm() {
 
         setTitle("User Management");
-        setSize(600, 500);
-        setLayout(null);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(new Color(242, 244, 247));
+        setContentPane(mainPanel);
+
+        // ================= WHITE CARD =================
+
+        JPanel card = new RoundedPanel(30);
+        card.setPreferredSize(new Dimension(800, 680));
+        card.setBackground(Color.WHITE);
+        card.setLayout(null);
+
+        mainPanel.add(card);
 
         service = new UserService();
 
@@ -37,126 +50,155 @@ public class UserForm extends JFrame implements ActionListener {
         );
 
         titleLabel.setFont(
-                new Font("Arial", Font.BOLD, 24)
+                new Font("Arial", Font.BOLD, 28)
         );
 
         titleLabel.setForeground(
                 new Color(25, 55, 90)
         );
 
-        titleLabel.setBounds(150, 30, 300, 35);
+        titleLabel.setBounds(200, 30, 400, 40);
 
-        add(titleLabel);
-
+        card.add(titleLabel);
 
         // ================= USER ID =================
 
-        idLabel = new JLabel("User ID:");
-        idLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        idLabel.setForeground(new Color(70, 70, 70));
-        idLabel.setBounds(80, 90, 100, 25);
+        idLabel = createLabel("User ID:");
+        idLabel.setBounds(100, 100, 140, 25);
 
         idField = new JTextField();
-        idField.setBounds(180, 90, 250, 28);
+        idField.setBounds(260, 100, 400, 32);
 
-        add(idLabel);
-        add(idField);
-
+        card.add(idLabel);
+        card.add(idField);
 
         // ================= NAME =================
 
-        nameLabel = new JLabel("Name:");
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        nameLabel.setForeground(new Color(70, 70, 70));
-        nameLabel.setBounds(80, 130, 100, 25);
+        nameLabel = createLabel("Name:");
+        nameLabel.setBounds(100, 150, 140, 25);
 
         nameField = new JTextField();
-        nameField.setBounds(180, 130, 250, 28);
+        nameField.setBounds(260, 150, 400, 32);
 
-        add(nameLabel);
-        add(nameField);
-
+        card.add(nameLabel);
+        card.add(nameField);
 
         // ================= EMAIL =================
 
-        emailLabel = new JLabel("Email:");
-        emailLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        emailLabel.setForeground(new Color(70, 70, 70));
-        emailLabel.setBounds(80, 170, 100, 25);
+        emailLabel = createLabel("Email:");
+        emailLabel.setBounds(100, 200, 140, 25);
 
         emailField = new JTextField();
-        emailField.setBounds(180, 170, 250, 28);
+        emailField.setBounds(260, 200, 400, 32);
 
-        add(emailLabel);
-        add(emailField);
-
+        card.add(emailLabel);
+        card.add(emailField);
 
         // ================= PHONE =================
 
-        phoneLabel = new JLabel("Phone:");
-        phoneLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        phoneLabel.setForeground(new Color(70, 70, 70));
-        phoneLabel.setBounds(80, 210, 100, 25);
+        phoneLabel = createLabel("Phone:");
+        phoneLabel.setBounds(100, 250, 140, 25);
 
         phoneField = new JTextField();
-        phoneField.setBounds(180, 210, 250, 28);
+        phoneField.setBounds(260, 250, 400, 32);
 
-        add(phoneLabel);
-        add(phoneField);
-
+        card.add(phoneLabel);
+        card.add(phoneField);
 
         // ================= PASSWORD =================
 
-        passwordLabel = new JLabel("Password:");
-        passwordLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        passwordLabel.setForeground(new Color(70, 70, 70));
-        passwordLabel.setBounds(80, 250, 100, 25);
+        passwordLabel = createLabel("Password:");
+        passwordLabel.setBounds(100, 300, 140, 25);
 
         passwordField = new JPasswordField();
-        passwordField.setBounds(180, 250, 250, 28);
+        passwordField.setBounds(260, 300, 400, 32);
 
-        add(passwordLabel);
-        add(passwordField);
-
+        card.add(passwordLabel);
+        card.add(passwordField);
 
         // ================= BUTTONS =================
 
-        addButton = new JButton("Add");
-        addButton.setBounds(70, 320, 100, 38);
+        addButton = createButton(
+                "Add",
+                new Color(45, 85, 130)
+        );
 
-        updateButton = new JButton("Update");
-        updateButton.setBounds(180, 320, 100, 38);
+        updateButton = createButton(
+                "Update",
+                new Color(55, 140, 100)
+        );
 
-        deleteButton = new JButton("Delete");
-        deleteButton.setBounds(290, 320, 100, 38);
+        deleteButton = createButton(
+                "Delete",
+                new Color(190, 70, 70)
+        );
 
-        viewButton = new JButton("View Users");
-        viewButton.setBounds(400, 320, 110, 38);
+        viewButton = createButton(
+                "View Users",
+                new Color(120, 80, 150)
+        );
 
+        clearButton = createButton(
+                "Clear",
+                new Color(210, 130, 50)
+        );
 
-        styleButton(addButton, new Color(45, 85, 130));
-        styleButton(updateButton, new Color(55, 140, 100));
-        styleButton(deleteButton, new Color(190, 70, 70));
-        styleButton(viewButton, new Color(120, 80, 150));
+        backButton = createButton(
+                "← Back",
+                new Color(90, 90, 90)
+        );
 
+        addButton.setBounds(70, 380, 120, 42);
+        updateButton.setBounds(205, 380, 120, 42);
+        deleteButton.setBounds(340, 380, 120, 42);
+        viewButton.setBounds(475, 380, 150, 42);
+
+        clearButton.setBounds(250, 455, 120, 42);
+        backButton.setBounds(390, 455, 120, 42);
+
+        card.add(addButton);
+        card.add(updateButton);
+        card.add(deleteButton);
+        card.add(viewButton);
+        card.add(clearButton);
+        card.add(backButton);
+
+        // ================= LISTENERS =================
 
         addButton.addActionListener(this);
         updateButton.addActionListener(this);
         deleteButton.addActionListener(this);
         viewButton.addActionListener(this);
-
-        add(addButton);
-        add(updateButton);
-        add(deleteButton);
-        add(viewButton);
+        clearButton.addActionListener(this);
+        backButton.addActionListener(this);
 
         setVisible(true);
     }
 
+    // ================= LABEL STYLE =================
+
+    private JLabel createLabel(String text) {
+
+        JLabel label = new JLabel(text);
+
+        label.setFont(
+                new Font("Arial", Font.BOLD, 14)
+        );
+
+        label.setForeground(
+                new Color(70, 70, 70)
+        );
+
+        return label;
+    }
 
     // ================= BUTTON STYLE =================
 
-    private void styleButton(JButton button, Color color) {
+    private JButton createButton(
+            String text,
+            Color color) {
+
+        JButton button = new JButton(text);
 
         button.setFont(
                 new Font("Arial", Font.BOLD, 13)
@@ -167,86 +209,71 @@ public class UserForm extends JFrame implements ActionListener {
 
         button.setFocusPainted(false);
         button.setBorderPainted(false);
-    }
 
+        return button;
+    }
 
     // ================= VALIDATION =================
 
     private boolean validateUserDetails() {
 
-        String name = nameField.getText().trim();
-        String email = emailField.getText().trim();
-        String phone = phoneField.getText().trim();
+        String name =
+                nameField.getText().trim();
+
+        String email =
+                emailField.getText().trim();
+
+        String phone =
+                phoneField.getText().trim();
+
         String password =
-                new String(passwordField.getPassword());
-
-
-        // NAME
+                new String(
+                        passwordField.getPassword()
+                );
 
         if (name.isEmpty()) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Name cannot be empty!"
-            );
-
+            showError("Name cannot be empty!");
             return false;
         }
 
         if (!name.matches("[a-zA-Z ]+")) {
 
-            JOptionPane.showMessageDialog(
-                    this,
+            showError(
                     "Name should contain only letters!"
             );
 
             return false;
         }
 
-
-        // EMAIL
-
         if (email.isEmpty()) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Email cannot be empty!"
-            );
-
+            showError("Email cannot be empty!");
             return false;
         }
 
         if (!email.matches(
                 "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
 
-            JOptionPane.showMessageDialog(
-                    this,
+            showError(
                     "Please enter a valid email!"
             );
 
             return false;
         }
 
-
-        // PHONE
-
         if (!phone.matches("\\d{10}")) {
 
-            JOptionPane.showMessageDialog(
-                    this,
+            showError(
                     "Phone number must contain exactly 10 digits!"
             );
 
             return false;
         }
 
-
-        // PASSWORD
-
         if (password.length() < 5) {
 
-            JOptionPane.showMessageDialog(
-                    this,
+            showError(
                     "Password must contain at least 5 characters!"
             );
 
@@ -255,7 +282,6 @@ public class UserForm extends JFrame implements ActionListener {
 
         return true;
     }
-
 
     // ================= BUTTON ACTIONS =================
 
@@ -272,15 +298,27 @@ public class UserForm extends JFrame implements ActionListener {
                     return;
                 }
 
-                String name = nameField.getText().trim();
-                String email = emailField.getText().trim();
-                String phone = phoneField.getText().trim();
+                String name =
+                        nameField.getText().trim();
+
+                String email =
+                        emailField.getText().trim();
+
+                String phone =
+                        phoneField.getText().trim();
 
                 String password =
-                        new String(passwordField.getPassword());
+                        new String(
+                                passwordField.getPassword()
+                        );
 
                 User user =
-                        new User(name, email, phone, password);
+                        new User(
+                                name,
+                                email,
+                                phone,
+                                password
+                        );
 
                 boolean success =
                         service.addUser(user);
@@ -289,18 +327,20 @@ public class UserForm extends JFrame implements ActionListener {
 
                     JOptionPane.showMessageDialog(
                             this,
-                            "User Added Successfully!"
+                            "User Added Successfully!",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE
                     );
+
+                    clearFields();
 
                 } else {
 
-                    JOptionPane.showMessageDialog(
-                            this,
+                    showError(
                             "User could not be added!"
                     );
                 }
             }
-
 
             // ================= UPDATE =================
 
@@ -320,25 +360,21 @@ public class UserForm extends JFrame implements ActionListener {
 
                 } catch (NumberFormatException ex) {
 
-                    JOptionPane.showMessageDialog(
-                            this,
+                    showError(
                             "Please enter a valid User ID!"
                     );
 
                     return;
                 }
 
-
                 if (id <= 0) {
 
-                    JOptionPane.showMessageDialog(
-                            this,
+                    showError(
                             "User ID must be greater than 0!"
                     );
 
                     return;
                 }
-
 
                 String name =
                         nameField.getText().trim();
@@ -350,8 +386,9 @@ public class UserForm extends JFrame implements ActionListener {
                         phoneField.getText().trim();
 
                 String password =
-                        new String(passwordField.getPassword());
-
+                        new String(
+                                passwordField.getPassword()
+                        );
 
                 User user =
                         new User(
@@ -363,25 +400,21 @@ public class UserForm extends JFrame implements ActionListener {
 
                 user.setUserId(id);
 
-
                 String oldPassword =
                         JOptionPane.showInputDialog(
                                 this,
                                 "Enter your current password:"
                         );
 
-
                 if (oldPassword == null ||
                         oldPassword.isEmpty()) {
 
-                    JOptionPane.showMessageDialog(
-                            this,
+                    showError(
                             "Password is required!"
                     );
 
                     return;
                 }
-
 
                 boolean success =
                         service.updateUser(
@@ -389,24 +422,25 @@ public class UserForm extends JFrame implements ActionListener {
                                 oldPassword
                         );
 
-
                 if (success) {
 
                     JOptionPane.showMessageDialog(
                             this,
-                            "User Updated Successfully!"
+                            "User Updated Successfully!",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE
                     );
+
+                    clearFields();
 
                 } else {
 
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "Invalid User ID or Password!\n" +
-                            "User was not updated."
+                    showError(
+                            "Invalid User ID or Password!\n"
+                            + "User was not updated."
                     );
                 }
             }
-
 
             // ================= DELETE =================
 
@@ -422,25 +456,21 @@ public class UserForm extends JFrame implements ActionListener {
 
                 } catch (NumberFormatException ex) {
 
-                    JOptionPane.showMessageDialog(
-                            this,
+                    showError(
                             "Please enter a valid User ID!"
                     );
 
                     return;
                 }
 
-
                 if (id <= 0) {
 
-                    JOptionPane.showMessageDialog(
-                            this,
+                    showError(
                             "User ID must be greater than 0!"
                     );
 
                     return;
                 }
-
 
                 String password =
                         JOptionPane.showInputDialog(
@@ -448,18 +478,15 @@ public class UserForm extends JFrame implements ActionListener {
                                 "Enter your password:"
                         );
 
-
                 if (password == null ||
                         password.isEmpty()) {
 
-                    JOptionPane.showMessageDialog(
-                            this,
+                    showError(
                             "Password is required!"
                     );
 
                     return;
                 }
-
 
                 boolean success =
                         service.deleteUser(
@@ -467,62 +494,265 @@ public class UserForm extends JFrame implements ActionListener {
                                 password
                         );
 
-
                 if (success) {
 
                     JOptionPane.showMessageDialog(
                             this,
-                            "User Deleted Successfully!"
+                            "User Deleted Successfully!",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE
                     );
+
+                    clearFields();
 
                 } else {
 
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "Invalid User ID or Password!\n" +
-                            "User was not deleted."
+                    showError(
+                            "Invalid User ID or Password!\n"
+                            + "User was not deleted."
                     );
                 }
             }
-
 
             // ================= VIEW =================
 
             else if (e.getSource() == viewButton) {
 
-                service.viewUsers();
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Users displayed in Output/Terminal!"
-                );
+                showUsersTable();
             }
-
 
             // ================= CLEAR =================
 
-            idField.setText("");
-            nameField.setText("");
-            emailField.setText("");
-            phoneField.setText("");
-            passwordField.setText("");
+            else if (e.getSource() == clearButton) {
 
+                clearFields();
+            }
+
+            // ================= BACK =================
+
+            else if (e.getSource() == backButton) {
+
+                int choice =
+                        JOptionPane.showConfirmDialog(
+                                this,
+                                "Go back to Dashboard?",
+                                "Back",
+                                JOptionPane.YES_NO_OPTION
+                        );
+
+                if (choice ==
+                        JOptionPane.YES_OPTION) {
+
+                    new Dashboard().setVisible(true);
+                    dispose();
+                }
+            }
 
         } catch (Exception ex) {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Something went wrong: " +
-                    ex.getMessage()
+                    "Something went wrong: "
+                    + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
             );
         }
     }
 
+    // ================= VIEW USERS =================
+
+    private void showUsersTable() {
+
+        Object[][] data =
+                service.getUsersForTable();
+
+        String[] columns = {
+                "User ID",
+                "Name",
+                "Email",
+                "Phone"
+        };
+
+        JTable table =
+                new JTable(data, columns);
+
+        table.setFont(
+                new Font("Arial", Font.PLAIN, 14)
+        );
+
+        table.setRowHeight(30);
+
+        table.getTableHeader().setFont(
+                new Font("Arial", Font.BOLD, 14)
+        );
+
+        table.getTableHeader().setBackground(
+                new Color(45, 85, 130)
+        );
+
+        table.getTableHeader().setForeground(
+                Color.WHITE
+        );
+
+        table.setSelectionMode(
+                ListSelectionModel.SINGLE_SELECTION
+        );
+
+        JScrollPane scrollPane =
+                new JScrollPane(table);
+
+        JFrame frame =
+                new JFrame("All Users");
+
+        frame.setExtendedState(
+                JFrame.MAXIMIZED_BOTH
+        );
+
+        frame.setDefaultCloseOperation(
+                JFrame.DISPOSE_ON_CLOSE
+        );
+
+        JPanel panel =
+                new JPanel(new BorderLayout());
+
+        panel.setBackground(
+                new Color(242, 244, 247)
+        );
+
+        panel.setBorder(
+                BorderFactory.createEmptyBorder(
+                        30, 30, 30, 30
+                )
+        );
+
+        JLabel title =
+                new JLabel(
+                        "ALL USERS",
+                        SwingConstants.CENTER
+                );
+
+        title.setFont(
+                new Font("Arial", Font.BOLD, 26)
+        );
+
+        title.setForeground(
+                new Color(25, 55, 90)
+        );
+
+        title.setBorder(
+                BorderFactory.createEmptyBorder(
+                        0, 0, 20, 0
+                )
+        );
+
+        panel.add(
+                title,
+                BorderLayout.NORTH
+        );
+
+        panel.add(
+                scrollPane,
+                BorderLayout.CENTER
+        );
+
+        JButton closeButton =
+                createButton(
+                        "← Back",
+                        new Color(90, 90, 90)
+                );
+
+        closeButton.addActionListener(
+                e -> frame.dispose()
+        );
+
+        JPanel bottomPanel =
+                new JPanel();
+
+        bottomPanel.setBackground(
+                new Color(242, 244, 247)
+        );
+
+        bottomPanel.add(closeButton);
+
+        panel.add(
+                bottomPanel,
+                BorderLayout.SOUTH
+        );
+
+        frame.setContentPane(panel);
+        frame.setVisible(true);
+    }
+
+    // ================= ERROR =================
+
+    private void showError(String message) {
+
+        JOptionPane.showMessageDialog(
+                this,
+                message,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+        );
+    }
+
+    // ================= CLEAR =================
+
+    private void clearFields() {
+
+        idField.setText("");
+        nameField.setText("");
+        emailField.setText("");
+        phoneField.setText("");
+        passwordField.setText("");
+    }
+
+    // ================= ROUNDED CARD =================
+
+    class RoundedPanel extends JPanel {
+
+        private int radius;
+
+        RoundedPanel(int radius) {
+
+            this.radius = radius;
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+
+            super.paintComponent(g);
+
+            Graphics2D g2 =
+                    (Graphics2D) g.create();
+
+            g2.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON
+            );
+
+            g2.setColor(getBackground());
+
+            g2.fillRoundRect(
+                    0,
+                    0,
+                    getWidth() - 1,
+                    getHeight() - 1,
+                    radius,
+                    radius
+            );
+
+            g2.dispose();
+        }
+    }
 
     // ================= MAIN =================
 
     public static void main(String[] args) {
 
-        new UserForm();
+        SwingUtilities.invokeLater(
+                () -> new UserForm()
+        );
     }
 }

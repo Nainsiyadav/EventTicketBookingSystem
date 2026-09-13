@@ -7,6 +7,7 @@ import model.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class UserService implements UserOperations {
 
@@ -260,5 +261,53 @@ public class UserService implements UserOperations {
         }
 
         return false;
+    }
+
+
+    // ================= USERS FOR GUI TABLE =================
+
+    public Object[][] getUsersForTable() {
+
+        String sql =
+                "SELECT user_id, name, email, phone " +
+                "FROM users ORDER BY user_id";
+
+        ArrayList<Object[]> rows = new ArrayList<>();
+
+        try (
+                Connection con = DBConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()
+        ) {
+
+            while (rs.next()) {
+
+                Object[] row = {
+                        rs.getInt("user_id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("phone")
+                };
+
+                rows.add(row);
+            }
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "Error while loading users for table!"
+            );
+
+            e.printStackTrace();
+        }
+
+        Object[][] data =
+                new Object[rows.size()][4];
+
+        for (int i = 0; i < rows.size(); i++) {
+            data[i] = rows.get(i);
+        }
+
+        return data;
     }
 }

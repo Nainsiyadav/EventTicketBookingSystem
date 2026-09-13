@@ -12,17 +12,55 @@ public class UserDashboard extends JFrame {
     private JButton myBookingsButton;
     private JButton logoutButton;
 
+    // ================= CONSTRUCTOR WITH USER ID + NAME =================
+
     public UserDashboard(int userId, String userName) {
 
         this.userId = userId;
         this.userName = userName;
 
+        createDashboard();
+    }
+
+    // ================= CONSTRUCTOR WITH ONLY USER ID =================
+    // Used when returning from MyBookingsForm
+
+    public UserDashboard(int userId) {
+
+        this.userId = userId;
+        this.userName = "User";
+
+        createDashboard();
+    }
+
+    // ================= CREATE DASHBOARD =================
+
+    private void createDashboard() {
+
         setTitle("Event Ticket Booking System - User Dashboard");
-        setSize(750, 500);
-        setLocationRelativeTo(null);
+
+        // Full laptop screen
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        setLayout(null);
+        // ================= MAIN PANEL =================
+
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(new Color(242, 244, 247));
+
+        setContentPane(mainPanel);
+
+        // ================= WHITE CARD =================
+
+        JPanel card = new RoundedPanel(30);
+
+        card.setPreferredSize(new Dimension(850, 600));
+        card.setBackground(Color.WHITE);
+
+        card.setLayout(null);
+
+        mainPanel.add(card);
 
         // ================= TITLE =================
 
@@ -32,17 +70,18 @@ public class UserDashboard extends JFrame {
         );
 
         titleLabel.setFont(
-                new Font("Arial", Font.BOLD, 26)
+                new Font("Arial", Font.BOLD, 28)
         );
 
         titleLabel.setForeground(
                 new Color(25, 55, 90)
         );
 
-        titleLabel.setBounds(100, 40, 550, 40);
+        titleLabel.setBounds(
+                100, 50, 650, 45
+        );
 
-        add(titleLabel);
-
+        card.add(titleLabel);
 
         // ================= WELCOME =================
 
@@ -59,17 +98,18 @@ public class UserDashboard extends JFrame {
                 new Color(70, 70, 70)
         );
 
-        welcomeLabel.setBounds(200, 90, 350, 35);
+        welcomeLabel.setBounds(
+                150, 105, 550, 35
+        );
 
-        add(welcomeLabel);
-
+        card.add(welcomeLabel);
 
         // ================= VIEW EVENTS =================
 
         viewEventsButton = new JButton("View Events");
 
         viewEventsButton.setBounds(
-                100, 170, 230, 55
+                100, 190, 280, 60
         );
 
         styleButton(
@@ -77,15 +117,14 @@ public class UserDashboard extends JFrame {
                 new Color(45, 85, 130)
         );
 
-        add(viewEventsButton);
-
+        card.add(viewEventsButton);
 
         // ================= MY BOOKINGS =================
 
         myBookingsButton = new JButton("My Bookings");
 
         myBookingsButton.setBounds(
-                400, 170, 230, 55
+                470, 190, 280, 60
         );
 
         styleButton(
@@ -93,15 +132,14 @@ public class UserDashboard extends JFrame {
                 new Color(55, 140, 100)
         );
 
-        add(myBookingsButton);
-
+        card.add(myBookingsButton);
 
         // ================= LOGOUT =================
 
         logoutButton = new JButton("Logout");
 
         logoutButton.setBounds(
-                250, 260, 230, 55
+                285, 300, 280, 60
         );
 
         styleButton(
@@ -109,8 +147,7 @@ public class UserDashboard extends JFrame {
                 new Color(190, 70, 70)
         );
 
-        add(logoutButton);
-
+        card.add(logoutButton);
 
         // ================= VIEW EVENTS ACTION =================
 
@@ -118,8 +155,8 @@ public class UserDashboard extends JFrame {
 
             new UserEventForm(userId).setVisible(true);
 
+            dispose();
         });
-
 
         // ================= MY BOOKINGS ACTION =================
 
@@ -127,8 +164,8 @@ public class UserDashboard extends JFrame {
 
             new MyBookingsForm(userId).setVisible(true);
 
+            dispose();
         });
-
 
         // ================= LOGOUT ACTION =================
 
@@ -147,15 +184,17 @@ public class UserDashboard extends JFrame {
 
                 dispose();
             }
-
         });
 
+        setVisible(true);
     }
-
 
     // ================= BUTTON STYLE =================
 
-    private void styleButton(JButton button, Color color) {
+    private void styleButton(
+            JButton button,
+            Color color
+    ) {
 
         button.setFont(
                 new Font("Arial", Font.BOLD, 16)
@@ -168,6 +207,46 @@ public class UserDashboard extends JFrame {
         button.setBorderPainted(false);
     }
 
+    // ================= ROUNDED CARD =================
+
+    class RoundedPanel extends JPanel {
+
+        private int radius;
+
+        RoundedPanel(int radius) {
+
+            this.radius = radius;
+
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+
+            Graphics2D g2 =
+                    (Graphics2D) g.create();
+
+            g2.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON
+            );
+
+            g2.setColor(getBackground());
+
+            g2.fillRoundRect(
+                    0,
+                    0,
+                    getWidth() - 1,
+                    getHeight() - 1,
+                    radius,
+                    radius
+            );
+
+            g2.dispose();
+
+            super.paintComponent(g);
+        }
+    }
 
     // ================= MAIN METHOD =================
 
@@ -178,9 +257,8 @@ public class UserDashboard extends JFrame {
             new UserDashboard(
                     1,
                     "Test User"
-            ).setVisible(true);
+            );
 
         });
-
     }
 }

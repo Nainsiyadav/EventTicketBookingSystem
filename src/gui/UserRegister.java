@@ -1,415 +1,203 @@
 package gui;
 
 import database.DBConnection;
-
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 public class UserRegister extends JFrame {
 
-    private JTextField nameField;
-    private JTextField emailField;
-    private JTextField phoneField;
+    private JTextField nameField, emailField, phoneField;
     private JPasswordField passwordField;
-
-    private JButton registerButton;
-    private JButton backButton;
+    private JButton registerButton, backButton;
 
     public UserRegister() {
-
         setTitle("User Registration");
-        setSize(500, 500);
-        setLocationRelativeTo(null);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(null);
 
-        // ================= TITLE =================
+        JPanel main = new JPanel(new GridBagLayout());
+        main.setBackground(new Color(235, 242, 250));
 
-        JLabel titleLabel = new JLabel(
-                "USER REGISTRATION",
-                SwingConstants.CENTER
-        );
+        JPanel card = new JPanel(null);
+        card.setPreferredSize(new Dimension(600, 570));
+        card.setBackground(Color.WHITE);
 
-        titleLabel.setFont(
-                new Font("Arial", Font.BOLD, 25)
-        );
-
-        titleLabel.setForeground(
-                new Color(25, 55, 90)
-        );
-
-        titleLabel.setBounds(110, 40, 280, 40);
-
-        add(titleLabel);
-
-
-        // ================= NAME =================
+        JLabel title = new JLabel("USER REGISTRATION", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 27));
+        title.setForeground(new Color(25, 55, 90));
+        title.setBounds(100, 35, 400, 40);
+        card.add(title);
 
         JLabel nameLabel = new JLabel("Name:");
-
         styleLabel(nameLabel);
-        nameLabel.setBounds(70, 110, 100, 30);
-
-        add(nameLabel);
+        nameLabel.setBounds(80, 105, 100, 30);
+        card.add(nameLabel);
 
         nameField = new JTextField();
-        nameField.setBounds(180, 110, 230, 30);
-
-        add(nameField);
-
-
-        // ================= EMAIL =================
+        nameField.setBounds(190, 105, 300, 35);
+        card.add(nameField);
 
         JLabel emailLabel = new JLabel("Email:");
-
         styleLabel(emailLabel);
-        emailLabel.setBounds(70, 160, 100, 30);
-
-        add(emailLabel);
+        emailLabel.setBounds(80, 160, 100, 30);
+        card.add(emailLabel);
 
         emailField = new JTextField();
-        emailField.setBounds(180, 160, 230, 30);
-
-        add(emailField);
-
-
-        // ================= PHONE =================
+        emailField.setBounds(190, 160, 300, 35);
+        card.add(emailField);
 
         JLabel phoneLabel = new JLabel("Phone:");
-
         styleLabel(phoneLabel);
-        phoneLabel.setBounds(70, 210, 100, 30);
-
-        add(phoneLabel);
+        phoneLabel.setBounds(80, 215, 100, 30);
+        card.add(phoneLabel);
 
         phoneField = new JTextField();
-        phoneField.setBounds(180, 210, 230, 30);
-
-        add(phoneField);
-
-
-        // ================= PASSWORD =================
+        phoneField.setBounds(190, 215, 300, 35);
+        card.add(phoneField);
 
         JLabel passwordLabel = new JLabel("Password:");
-
         styleLabel(passwordLabel);
-        passwordLabel.setBounds(70, 260, 100, 30);
-
-        add(passwordLabel);
+        passwordLabel.setBounds(80, 270, 100, 30);
+        card.add(passwordLabel);
 
         passwordField = new JPasswordField();
-        passwordField.setBounds(180, 260, 230, 30);
-
-        add(passwordField);
-
-
-        // ================= REGISTER BUTTON =================
+        passwordField.setBounds(190, 270, 300, 35);
+        card.add(passwordField);
 
         registerButton = new JButton("Register");
-
-        registerButton.setBounds(
-                140, 330, 110, 35
-        );
-
-        styleButton(
-                registerButton,
-                new Color(55, 140, 100)
-        );
-
-        add(registerButton);
-
-
-        // ================= BACK BUTTON =================
+        registerButton.setBounds(130, 350, 150, 45);
+        styleButton(registerButton, new Color(55, 140, 100));
+        card.add(registerButton);
 
         backButton = new JButton("Back to Login");
+        backButton.setBounds(300, 350, 160, 45);
+        styleButton(backButton, new Color(45, 85, 130));
+        card.add(backButton);
 
-        backButton.setBounds(
-                260, 330, 130, 35
-        );
-
-        styleButton(
-                backButton,
-                new Color(45, 85, 130)
-        );
-
-        add(backButton);
-
-
-        // ================= REGISTER ACTION =================
-
-        registerButton.addActionListener(
-                e -> registerUser()
-        );
-
-
-        // ================= BACK ACTION =================
+        registerButton.addActionListener(e -> registerUser());
 
         backButton.addActionListener(e -> {
-
-            new UserLogin();
-
+            new UserLogin().setVisible(true);
             dispose();
         });
 
-
+        main.add(card);
+        add(main);
         setVisible(true);
     }
 
-
-    // ================= LABEL STYLE =================
-
     private void styleLabel(JLabel label) {
-
-        label.setFont(
-                new Font("Arial", Font.BOLD, 15)
-        );
-
-        label.setForeground(
-                new Color(70, 70, 70)
-        );
+        label.setFont(new Font("Arial", Font.BOLD, 15));
+        label.setForeground(new Color(70, 70, 70));
     }
 
-
-    // ================= BUTTON STYLE =================
-
-    private void styleButton(
-            JButton button,
-            Color color
-    ) {
-
-        button.setFont(
-                new Font("Arial", Font.BOLD, 14)
-        );
-
-        button.setBackground(color);
-        button.setForeground(Color.WHITE);
-
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
+    private void styleButton(JButton b, Color c) {
+        b.setFont(new Font("Arial", Font.BOLD, 14));
+        b.setBackground(c);
+        b.setForeground(Color.WHITE);
+        b.setFocusPainted(false);
+        b.setBorderPainted(false);
     }
-
-
-    // =========================
-    // REGISTER USER
-    // =========================
 
     private void registerUser() {
 
-        String name =
-                nameField.getText().trim();
+        String name = nameField.getText().trim();
+        String email = emailField.getText().trim();
+        String phone = phoneField.getText().trim();
+        String password = new String(passwordField.getPassword());
 
-        String email =
-                emailField.getText().trim();
+        if (name.isEmpty() || email.isEmpty() ||
+            phone.isEmpty() || password.isEmpty()) {
 
-        String phone =
-                phoneField.getText().trim();
-
-        String password =
-                new String(
-                        passwordField.getPassword()
-                );
-
-
-        // =========================
-        // VALIDATION
-        // =========================
-
-        if (name.isEmpty()
-                || email.isEmpty()
-                || phone.isEmpty()
-                || password.isEmpty()) {
-
-            JOptionPane.showMessageDialog(
-                    this,
+            JOptionPane.showMessageDialog(this,
                     "Please fill all fields!",
                     "Validation Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-
-        // =========================
-        // EMAIL VALIDATION
-        // =========================
-
-        if (!email.contains("@")
-                || !email.contains(".")) {
-
-            JOptionPane.showMessageDialog(
-                    this,
+        if (!email.contains("@") || !email.contains(".")) {
+            JOptionPane.showMessageDialog(this,
                     "Please enter a valid email address!",
                     "Invalid Email",
-                    JOptionPane.ERROR_MESSAGE
-            );
-
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-
-        // =========================
-        // PHONE VALIDATION
-        // =========================
 
         if (!phone.matches("\\d{10}")) {
-
-            JOptionPane.showMessageDialog(
-                    this,
+            JOptionPane.showMessageDialog(this,
                     "Phone number must contain exactly 10 digits!",
                     "Invalid Phone",
-                    JOptionPane.ERROR_MESSAGE
-            );
-
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-
-        // =========================
-        // PASSWORD VALIDATION
-        // =========================
 
         if (password.length() < 6) {
-
-            JOptionPane.showMessageDialog(
-                    this,
+            JOptionPane.showMessageDialog(this,
                     "Password must contain at least 6 characters!",
                     "Invalid Password",
-                    JOptionPane.ERROR_MESSAGE
-            );
-
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
+        try (Connection con = DBConnection.getConnection()) {
 
-        // =========================
-        // CHECK EMAIL
-        // =========================
+            String checkSql =
+                    "SELECT user_id FROM users WHERE email = ?";
 
-        String checkSql =
-                "SELECT user_id FROM users WHERE email = ?";
+            try (PreparedStatement ps = con.prepareStatement(checkSql)) {
+                ps.setString(1, email);
 
+                ResultSet rs = ps.executeQuery();
 
-        try (
-                Connection con =
-                        DBConnection.getConnection();
-
-                PreparedStatement checkPs =
-                        con.prepareStatement(checkSql)
-        ) {
-
-            checkPs.setString(1, email);
-
-            ResultSet rs =
-                    checkPs.executeQuery();
-
-
-            if (rs.next()) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Email already registered!",
-                        "Registration Failed",
-                        JOptionPane.ERROR_MESSAGE
-                );
-
-                return;
+                if (rs.next()) {
+                    JOptionPane.showMessageDialog(this,
+                            "Email already registered!",
+                            "Registration Failed",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
 
+            String sql =
+                    "INSERT INTO users(name, email, phone, password) " +
+                    "VALUES (?, ?, ?, ?)";
 
-        } catch (Exception e) {
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Database Error: "
-                            + e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+                ps.setString(1, name);
+                ps.setString(2, email);
+                ps.setString(3, phone);
+                ps.setString(4, password);
 
-            return;
-        }
+                if (ps.executeUpdate() > 0) {
 
+                    JOptionPane.showMessageDialog(this,
+                            "Registration Successful!\nYou can now login.",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
 
-        // =========================
-        // INSERT USER
-        // =========================
+                    new UserLogin().setVisible(true);
+                    dispose();
 
-        String sql =
-                "INSERT INTO users "
-                + "(name, email, phone, password) "
-                + "VALUES (?, ?, ?, ?)";
-
-
-        try (
-                Connection con =
-                        DBConnection.getConnection();
-
-                PreparedStatement ps =
-                        con.prepareStatement(sql)
-        ) {
-
-            ps.setString(1, name);
-            ps.setString(2, email);
-            ps.setString(3, phone);
-            ps.setString(4, password);
-
-
-            int result =
-                    ps.executeUpdate();
-
-
-            if (result > 0) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Registration Successful!\n"
-                                + "You can now login.",
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE
-                );
-
-
-                // Go to User Login
-                new UserLogin();
-
-                dispose();
-
-            } else {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Registration Failed!",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Registration Failed!",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
 
-
         } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Database Error: "
-                            + e.getMessage(),
+            JOptionPane.showMessageDialog(this,
+                    "Database Error: " + e.getMessage(),
                     "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
-
-    // =========================
-    // MAIN METHOD
-    // =========================
-
     public static void main(String[] args) {
-
-        SwingUtilities.invokeLater(
-                () -> new UserRegister()
-        );
+        SwingUtilities.invokeLater(() -> new UserRegister());
     }
 }

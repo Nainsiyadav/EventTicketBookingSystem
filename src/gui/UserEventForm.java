@@ -21,40 +21,44 @@ public class UserEventForm extends JFrame {
         eventService = new EventService();
 
         setTitle("Available Events");
-        setSize(950, 550);
-        setLocationRelativeTo(null);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         createGUI();
         loadEvents();
+        setVisible(true);
     }
-
-    // =========================
-    // CREATE GUI
-    // =========================
 
     private void createGUI() {
 
-        setLayout(new BorderLayout(10, 10));
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(new Color(242, 244, 247));
+        setContentPane(mainPanel);
 
-        // TITLE
+        JPanel card = new RoundedPanel(30);
+        card.setPreferredSize(new Dimension(1150, 700));
+        card.setBackground(Color.WHITE);
+        card.setLayout(new BorderLayout(15, 15));
+        card.setBorder(
+                BorderFactory.createEmptyBorder(25, 30, 25, 30)
+        );
+
+        mainPanel.add(card);
+
+        // ================= TITLE =================
+
         JLabel title = new JLabel(
                 "AVAILABLE EVENTS",
                 SwingConstants.CENTER
         );
 
-        title.setFont(
-                new Font("Arial", Font.BOLD, 26)
-        );
+        title.setFont(new Font("Arial", Font.BOLD, 28));
+        title.setForeground(new Color(25, 55, 90));
 
-        title.setForeground(
-                new Color(25, 55, 90)
-        );
+        card.add(title, BorderLayout.NORTH);
 
-        add(title, BorderLayout.NORTH);
+        // ================= TABLE =================
 
-
-        // TABLE COLUMNS
         String[] columns = {
                 "Event ID",
                 "Event Name",
@@ -65,53 +69,48 @@ public class UserEventForm extends JFrame {
                 "Available Tickets"
         };
 
-
         tableModel = new DefaultTableModel(columns, 0) {
 
             @Override
-            public boolean isCellEditable(
-                    int row,
-                    int column
-            ) {
+            public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
 
-
         eventTable = new JTable(tableModel);
 
+        eventTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        eventTable.setRowHeight(32);
         eventTable.setSelectionMode(
                 ListSelectionModel.SINGLE_SELECTION
         );
 
-        eventTable.setRowHeight(25);
+        eventTable.getTableHeader().setFont(
+                new Font("Arial", Font.BOLD, 14)
+        );
 
         eventTable.getTableHeader().setBackground(
                 new Color(45, 85, 130)
         );
 
-        eventTable.getTableHeader().setForeground(
-                Color.WHITE
+        eventTable.getTableHeader().setForeground(Color.WHITE);
+
+        eventTable.getTableHeader().setPreferredSize(
+                new Dimension(0, 40)
         );
 
-        eventTable.getTableHeader().setFont(
-                new Font("Arial", Font.BOLD, 13)
-        );
+        JScrollPane scrollPane = new JScrollPane(eventTable);
 
+        card.add(scrollPane, BorderLayout.CENTER);
 
-        JScrollPane scrollPane =
-                new JScrollPane(eventTable);
+        // ================= BUTTONS =================
 
-        add(scrollPane, BorderLayout.CENTER);
-
-
-        // BUTTON PANEL
         JPanel buttonPanel =
                 new JPanel(new FlowLayout(
-                        FlowLayout.CENTER,
-                        15,
-                        8
+                        FlowLayout.CENTER, 20, 5
                 ));
+
+        buttonPanel.setOpaque(false);
 
         JButton refreshButton =
                 new JButton("Refresh");
@@ -120,8 +119,7 @@ public class UserEventForm extends JFrame {
                 new JButton("Book Ticket");
 
         JButton backButton =
-                new JButton("Back");
-
+                new JButton("← Back");
 
         styleButton(
                 refreshButton,
@@ -135,70 +133,62 @@ public class UserEventForm extends JFrame {
 
         styleButton(
                 backButton,
-                new Color(190, 70, 70)
+                new Color(90, 90, 90)
         );
-
 
         buttonPanel.add(refreshButton);
         buttonPanel.add(bookButton);
         buttonPanel.add(backButton);
 
-        add(buttonPanel, BorderLayout.SOUTH);
+        card.add(buttonPanel, BorderLayout.SOUTH);
 
+        // ================= REFRESH =================
 
-        // REFRESH
-        refreshButton.addActionListener(e -> {
+        refreshButton.addActionListener(e ->
+                loadEvents()
+        );
 
-            loadEvents();
+        // ================= BOOK TICKET =================
 
-        });
-
-
-        // BOOK TICKET
         bookButton.addActionListener(e -> {
 
-            int row =
-                    eventTable.getSelectedRow();
+            int row = eventTable.getSelectedRow();
 
             if (row == -1) {
 
                 JOptionPane.showMessageDialog(
                         this,
-                        "Please select an event first."
+                        "Please select an event first.",
+                        "Select Event",
+                        JOptionPane.WARNING_MESSAGE
                 );
 
                 return;
             }
 
-
-            int eventId =
-                    Integer.parseInt(
-                            tableModel
-                                    .getValueAt(row, 0)
-                                    .toString()
-                    );
-
+            int eventId = Integer.parseInt(
+                    tableModel.getValueAt(row, 0).toString()
+            );
 
             new UserBookingForm(
                     userId,
                     eventId
             ).setVisible(true);
 
+            dispose();
         });
 
+        // ================= BACK =================
 
-        // BACK
         backButton.addActionListener(e -> {
 
-            dispose();
+            new UserDashboard(userId).setVisible(true);
 
+            dispose();
         });
     }
 
-
-    // =========================
-    // BUTTON STYLE
-    // =========================
+    // ================= BUTTON STYLE =================
 
     private void styleButton(
             JButton button,
@@ -211,15 +201,14 @@ public class UserEventForm extends JFrame {
 
         button.setBackground(color);
         button.setForeground(Color.WHITE);
-
         button.setFocusPainted(false);
         button.setBorderPainted(false);
+        button.setPreferredSize(
+                new Dimension(140, 42)
+        );
     }
 
-
-    // =========================
-    // LOAD EVENTS
-    // =========================
+    // ================= LOAD EVENTS =================
 
     private void loadEvents() {
 
@@ -228,45 +217,64 @@ public class UserEventForm extends JFrame {
         List<Event> events =
                 eventService.getAllEvents();
 
-
         for (Event event : events) {
 
-            Object[] row = {
+            tableModel.addRow(new Object[]{
 
                     event.getEventId(),
-
                     event.getEventName(),
-
                     event.getEventDate(),
-
                     event.getEventTime(),
-
                     event.getVenue(),
-
                     "₹" + event.getTicketPrice(),
-
                     event.getTotalTickets()
-            };
-
-
-            tableModel.addRow(row);
+            });
         }
     }
 
+    // ================= ROUNDED CARD =================
 
-    // =========================
-    // MAIN METHOD
-    // =========================
+    class RoundedPanel extends JPanel {
+
+        private int radius;
+
+        RoundedPanel(int radius) {
+            this.radius = radius;
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+
+            Graphics2D g2 =
+                    (Graphics2D) g.create();
+
+            g2.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON
+            );
+
+            g2.setColor(getBackground());
+
+            g2.fillRoundRect(
+                    0,
+                    0,
+                    getWidth() - 1,
+                    getHeight() - 1,
+                    radius,
+                    radius
+            );
+
+            g2.dispose();
+        }
+    }
+
+    // ================= MAIN =================
 
     public static void main(String[] args) {
 
-        SwingUtilities.invokeLater(() -> {
-
-            UserEventForm form =
-                    new UserEventForm(1);
-
-            form.setVisible(true);
-
-        });
+        SwingUtilities.invokeLater(() ->
+                new UserEventForm(1)
+        );
     }
 }

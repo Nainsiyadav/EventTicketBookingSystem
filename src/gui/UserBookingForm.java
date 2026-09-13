@@ -15,10 +15,10 @@ public class UserBookingForm extends JFrame {
     private int userId, eventId;
     private BookingService bookingService;
 
-    private JLabel eventLabel, ticketLabel, priceLabel, totalLabel;
+    private JLabel eventLabel, priceLabel, totalLabel;
     private JComboBox<String> ticketTypeCombo;
     private JTextField quantityField;
-    private JButton bookButton, cancelButton;
+    private JButton bookButton, backButton;
 
     private int selectedTicketTypeId = -1;
     private double selectedTicketPrice = 0.0;
@@ -30,77 +30,101 @@ public class UserBookingForm extends JFrame {
         bookingService = new BookingService();
 
         setTitle("Book Ticket");
-        setSize(550, 450);
-        setLocationRelativeTo(null);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(null);
 
-        // TITLE
-        JLabel titleLabel = new JLabel("BOOK TICKET", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 25));
-        titleLabel.setForeground(new Color(25, 55, 90));
-        titleLabel.setBounds(140, 30, 270, 40);
-        add(titleLabel);
+        // ================= MAIN PANEL =================
 
-        // USER ID
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(new Color(242, 244, 247));
+        setContentPane(mainPanel);
+
+        // ================= WHITE CARD =================
+
+        JPanel card = new RoundedPanel(30);
+        card.setPreferredSize(new Dimension(700, 620));
+        card.setBackground(Color.WHITE);
+        card.setLayout(null);
+        mainPanel.add(card);
+
+        // ================= TITLE =================
+
+        JLabel title = new JLabel("BOOK TICKET", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 28));
+        title.setForeground(new Color(25, 55, 90));
+        title.setBounds(100, 30, 500, 45);
+        card.add(title);
+
+        // ================= USER ID =================
+
         JLabel userLabel = label("User ID:");
-        userLabel.setBounds(70, 100, 120, 30);
-        add(userLabel);
+        userLabel.setBounds(80, 100, 130, 30);
+        card.add(userLabel);
 
-        JLabel userValueLabel =
-                new JLabel(String.valueOf(userId));
-        userValueLabel.setBounds(220, 100, 220, 30);
-        add(userValueLabel);
+        JLabel userValue = new JLabel(String.valueOf(userId));
+        userValue.setFont(new Font("Arial", Font.PLAIN, 15));
+        userValue.setBounds(230, 100, 250, 30);
+        card.add(userValue);
 
-        // EVENT ID
+        // ================= EVENT ID =================
+
         JLabel eventIdLabel = label("Event ID:");
-        eventIdLabel.setBounds(70, 140, 120, 30);
-        add(eventIdLabel);
+        eventIdLabel.setBounds(80, 145, 130, 30);
+        card.add(eventIdLabel);
 
         eventLabel = new JLabel(String.valueOf(eventId));
-        eventLabel.setBounds(220, 140, 220, 30);
-        add(eventLabel);
+        eventLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        eventLabel.setBounds(230, 145, 250, 30);
+        card.add(eventLabel);
 
-        // TICKET TYPE
-        ticketLabel = label("Ticket Type:");
-        ticketLabel.setBounds(70, 180, 120, 30);
-        add(ticketLabel);
+        // ================= TICKET TYPE =================
+
+        JLabel ticketLabel = label("Ticket Type:");
+        ticketLabel.setBounds(80, 190, 130, 30);
+        card.add(ticketLabel);
 
         ticketTypeCombo = new JComboBox<>();
-        ticketTypeCombo.setBounds(220, 180, 220, 30);
-        add(ticketTypeCombo);
+        ticketTypeCombo.setBounds(230, 190, 350, 32);
+        card.add(ticketTypeCombo);
 
-        // PRICE
+        // ================= PRICE =================
+
         priceLabel = label("Ticket Price: ₹0.00");
-        priceLabel.setBounds(70, 220, 300, 30);
-        add(priceLabel);
+        priceLabel.setBounds(80, 240, 300, 30);
+        card.add(priceLabel);
 
-        // QUANTITY
+        // ================= QUANTITY =================
+
         JLabel quantityLabel = label("Quantity:");
-        quantityLabel.setBounds(70, 260, 120, 30);
-        add(quantityLabel);
+        quantityLabel.setBounds(80, 285, 130, 30);
+        card.add(quantityLabel);
 
         quantityField = new JTextField("1");
-        quantityField.setBounds(220, 260, 220, 30);
-        add(quantityField);
+        quantityField.setBounds(230, 285, 350, 32);
+        card.add(quantityField);
 
-        // TOTAL
+        // ================= TOTAL =================
+
         totalLabel = label("Total Amount: ₹0.00");
-        totalLabel.setBounds(70, 300, 300, 30);
-        add(totalLabel);
+        totalLabel.setBounds(80, 335, 350, 30);
+        card.add(totalLabel);
 
-        // BUTTONS
+        // ================= BOOK BUTTON =================
+
         bookButton = new JButton("Book Ticket");
-        bookButton.setBounds(140, 350, 120, 35);
+        bookButton.setBounds(140, 410, 180, 45);
         styleButton(bookButton, new Color(55, 140, 100));
-        add(bookButton);
+        card.add(bookButton);
 
-        cancelButton = new JButton("Cancel");
-        cancelButton.setBounds(280, 350, 100, 35);
-        styleButton(cancelButton, new Color(190, 70, 70));
-        add(cancelButton);
+        // ================= BACK BUTTON =================
 
-        // LOAD TICKETS
+        backButton = new JButton("← Back");
+        backButton.setBounds(380, 410, 180, 45);
+        styleButton(backButton, new Color(90, 90, 90));
+        card.add(backButton);
+
+        // ================= ACTIONS =================
+
         loadTicketTypes();
 
         ticketTypeCombo.addActionListener(e -> updateTicketDetails());
@@ -113,10 +137,17 @@ public class UserBookingForm extends JFrame {
         });
 
         bookButton.addActionListener(e -> bookTicket());
-        cancelButton.addActionListener(e -> dispose());
+
+        backButton.addActionListener(e -> {
+            new UserEventForm(userId).setVisible(true);
+            dispose();
+        });
+
+        setVisible(true);
     }
 
-    // LABEL STYLE
+    // ================= LABEL STYLE =================
+
     private JLabel label(String text) {
         JLabel l = new JLabel(text);
         l.setFont(new Font("Arial", Font.BOLD, 15));
@@ -124,15 +155,18 @@ public class UserBookingForm extends JFrame {
         return l;
     }
 
-    // BUTTON STYLE
+    // ================= BUTTON STYLE =================
+
     private void styleButton(JButton button, Color color) {
+        button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setBackground(color);
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
         button.setBorderPainted(false);
     }
 
-    // LOAD TICKET TYPES
+    // ================= LOAD TICKET TYPES =================
+
     private void loadTicketTypes() {
 
         String sql =
@@ -147,6 +181,7 @@ public class UserBookingForm extends JFrame {
 
             ps.setInt(1, eventId);
             ResultSet rs = ps.executeQuery();
+
             ticketTypeCombo.removeAllItems();
 
             while (rs.next()) {
@@ -158,7 +193,8 @@ public class UserBookingForm extends JFrame {
 
                 ticketTypeCombo.addItem(
                         id + " - " + name + " - ₹" +
-                        price + " (" + available + " available)");
+                        price + " (" + available + " available)"
+                );
             }
 
             if (ticketTypeCombo.getItemCount() == 0) {
@@ -167,7 +203,8 @@ public class UserBookingForm extends JFrame {
                         this,
                         "No tickets available for this event.",
                         "No Tickets",
-                        JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.WARNING_MESSAGE
+                );
 
                 bookButton.setEnabled(false);
             }
@@ -178,19 +215,22 @@ public class UserBookingForm extends JFrame {
                     this,
                     "Error loading ticket types:\n" + e.getMessage(),
                     "Database Error",
-                    JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
 
         updateTicketDetails();
     }
 
-    // UPDATE TICKET DETAILS
+    // ================= UPDATE DETAILS =================
+
     private void updateTicketDetails() {
 
         if (ticketTypeCombo.getSelectedItem() == null) {
 
             selectedTicketTypeId = -1;
-            selectedTicketPrice = 0.0;
+            selectedTicketPrice = 0;
+
             priceLabel.setText("Ticket Price: ₹0.00");
             totalLabel.setText("Total Amount: ₹0.00");
             return;
@@ -199,8 +239,8 @@ public class UserBookingForm extends JFrame {
         try {
 
             String[] parts =
-                    ticketTypeCombo.getSelectedItem().toString()
-                            .split(" - ");
+                    ticketTypeCombo.getSelectedItem()
+                            .toString().split(" - ");
 
             selectedTicketTypeId =
                     Integer.parseInt(parts[0].trim());
@@ -215,27 +255,32 @@ public class UserBookingForm extends JFrame {
             priceLabel.setText(
                     String.format(
                             "Ticket Price: ₹%.2f",
-                            selectedTicketPrice));
+                            selectedTicketPrice
+                    )
+            );
 
             calculateTotal();
 
         } catch (Exception e) {
 
             selectedTicketTypeId = -1;
-            selectedTicketPrice = 0.0;
+            selectedTicketPrice = 0;
 
             priceLabel.setText("Ticket Price: ₹0.00");
             totalLabel.setText("Total Amount: ₹0.00");
         }
     }
 
-    // CALCULATE TOTAL
+    // ================= CALCULATE TOTAL =================
+
     private void calculateTotal() {
 
         try {
 
             int quantity =
-                    Integer.parseInt(quantityField.getText().trim());
+                    Integer.parseInt(
+                            quantityField.getText().trim()
+                    );
 
             if (quantity <= 0) {
                 totalLabel.setText("Total Amount: ₹0.00");
@@ -246,7 +291,10 @@ public class UserBookingForm extends JFrame {
 
             totalLabel.setText(
                     String.format(
-                            "Total Amount: ₹%.2f", total));
+                            "Total Amount: ₹%.2f",
+                            total
+                    )
+            );
 
         } catch (NumberFormatException e) {
 
@@ -254,7 +302,8 @@ public class UserBookingForm extends JFrame {
         }
     }
 
-    // BOOK TICKET
+    // ================= BOOK TICKET =================
+
     private void bookTicket() {
 
         try {
@@ -265,7 +314,8 @@ public class UserBookingForm extends JFrame {
                         this,
                         "Please select a ticket type.",
                         "Validation Error",
-                        JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.ERROR_MESSAGE
+                );
                 return;
             }
 
@@ -278,7 +328,8 @@ public class UserBookingForm extends JFrame {
                         this,
                         "Please enter quantity.",
                         "Validation Error",
-                        JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.ERROR_MESSAGE
+                );
                 return;
             }
 
@@ -290,7 +341,8 @@ public class UserBookingForm extends JFrame {
                         this,
                         "Quantity must be greater than 0.",
                         "Validation Error",
-                        JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.ERROR_MESSAGE
+                );
                 return;
             }
 
@@ -306,9 +358,11 @@ public class UserBookingForm extends JFrame {
                             "Confirm booking?",
                             selectedTicketPrice,
                             quantity,
-                            totalAmount),
+                            totalAmount
+                    ),
                     "Confirm Booking",
-                    JOptionPane.YES_NO_OPTION);
+                    JOptionPane.YES_NO_OPTION
+            );
 
             if (choice != JOptionPane.YES_OPTION)
                 return;
@@ -318,7 +372,8 @@ public class UserBookingForm extends JFrame {
                     eventId,
                     selectedTicketTypeId,
                     quantity,
-                    totalAmount);
+                    totalAmount
+            );
 
             String result =
                     bookingService.addBooking(booking);
@@ -331,11 +386,13 @@ public class UserBookingForm extends JFrame {
                         result + "\nBooking ID: " +
                         booking.getBookingId(),
                         "Booking Successful",
-                        JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.INFORMATION_MESSAGE
+                );
 
                 new UserPaymentForm(
                         userId,
-                        booking.getBookingId()).setVisible(true);
+                        booking.getBookingId()
+                ).setVisible(true);
 
                 dispose();
 
@@ -345,7 +402,8 @@ public class UserBookingForm extends JFrame {
                         this,
                         result,
                         "Booking Failed",
-                        JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
 
         } catch (NumberFormatException e) {
@@ -354,7 +412,8 @@ public class UserBookingForm extends JFrame {
                     this,
                     "Please enter a valid quantity.",
                     "Invalid Quantity",
-                    JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE
+            );
 
         } catch (Exception e) {
 
@@ -362,14 +421,51 @@ public class UserBookingForm extends JFrame {
                     this,
                     "Error while booking:\n" + e.getMessage(),
                     "Error",
-                    JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
-    // MAIN
+    // ================= ROUNDED CARD =================
+
+    class RoundedPanel extends JPanel {
+
+        private int radius;
+
+        RoundedPanel(int radius) {
+            this.radius = radius;
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+
+            Graphics2D g2 = (Graphics2D) g.create();
+
+            g2.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON
+            );
+
+            g2.setColor(getBackground());
+
+            g2.fillRoundRect(
+                    0, 0,
+                    getWidth() - 1,
+                    getHeight() - 1,
+                    radius, radius
+            );
+
+            g2.dispose();
+        }
+    }
+
+    // ================= MAIN =================
+
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() ->
-                new UserBookingForm(1, 1).setVisible(true));
+                new UserBookingForm(1, 1)
+        );
     }
 }
