@@ -466,62 +466,63 @@ My Bookings
 
 All screenshots are kept exactly with the existing names: image1.png, image2.png, ... image14.png inside src/screenSorts/.
 
-🖼️ Project Screenshots
+## 🖼️ Project Screenshots
 
-Image 1
+### Image 1
 
+![Image 1](src/screenSorts/image1.png)
 
+### Image 2
 
-Image 2
+![Image 2](src/screenSorts/image2.png)
 
+### Image 3
 
+![Image 3](src/screenSorts/image3.png)
 
-Image 3
+### Image 4
 
+![Image 4](src/screenSorts/image4.png)
 
+### Image 5
 
-Image 4
+![Image 5](src/screenSorts/image5.png)
 
+### Image 6
 
+![Image 6](src/screenSorts/image6.png)
 
-Image 5
+### Image 7
 
+![Image 7](src/screenSorts/image7.png)
 
+### Image 8
 
-Image 6
+![Image 8](src/screenSorts/image8.png)
 
+### Image 9
 
+![Image 9](src/screenSorts/image9.png)
 
-Image 7
+### Image 10
 
+![Image 10](src/screenSorts/image10.png)
 
+### Image 11
 
-Image 8
+![Image 11](src/screenSorts/image11.png)
 
+### Image 12
 
+![Image 12](src/screenSorts/image12.png)
 
-Image 9
+### Image 13
 
+![Image 13](src/screenSorts/image13.png)
 
+### Image 14
 
-Image 10
-
-
-
-Image 11
-
-
-
-Image 12
-
-
-
-Image 13
-
-
-
-Image 14
-
+![Image 14](src/screenSorts/image14.png)
 
 
 ✅ Project Features Summary
