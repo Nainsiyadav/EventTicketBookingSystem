@@ -88,56 +88,6 @@ VS Code
 
 Source-code editing / project development
 
-📂 Project Structure
-
-EventTicketBookingSystem/
-│
-├── lib/
-│   └── mysql-connector-j-9.7.0.jar
-│
-└── src/
-    ├── database/
-    │   └── DBConnection.java
-    │
-    ├── gui/
-    │   ├── AdminForm.java
-    │   ├── AdminLogin.java
-    │   ├── BookingForm.java
-    │   ├── Dashboard.java
-    │   ├── EventForm.java
-    │   ├── MainLogin.java
-    │   ├── MyBookingsForm.java
-    │   ├── PaymentForm.java
-    │   ├── ReportForm.java
-    │   ├── UserBookingForm.java
-    │   ├── UserDashboard.java
-    │   ├── UserEventForm.java
-    │   ├── UserForm.java
-    │   ├── UserLogin.java
-    │   └── UserRegister.java
-    │
-    ├── interfaces/
-    │   ├── AdminOperations.java
-    │   ├── BookingOperations.java
-    │   ├── EventOperations.java
-    │   ├── PaymentOperations.java
-    │   ├── ReportOperations.java
-    │   └── UserOperations.java
-    │
-    ├── model/
-    │   ├── Admin.java
-    │   ├── Booking.java
-    │   ├── Event.java
-    │   ├── Payment.java
-    │   └── User.java
-    │
-    └── main/
-        ├── TestBooking.java
-        ├── TestConnection.java
-        ├── TestEvent.java
-        ├── TestPayment.java
-        ├── TestReport.java
-        └── TestUser.java
 
 🏗️ System Architecture
 
